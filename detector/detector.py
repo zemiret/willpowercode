@@ -1,5 +1,5 @@
 import cv2 as cv
-import numpy as np 
+import numpy as np
 
 
 def make_hand_mask(img):
@@ -9,11 +9,11 @@ def make_hand_mask(img):
     img_hls = cv.cvtColor(img, cv.COLOR_BGR2HLS)
     range_mask = cv.inRange(img_hls, skin_lower(0), skin_upper(20))
 
-
     blurred = cv.blur(range_mask, (10, 10))
     _, threshed = cv.threshold(blurred, 200, 255, cv.THRESH_BINARY)
 
     return threshed
+
 
 def get_hand_contour(mask):
     # get all contours and return the biggest one
