@@ -3,6 +3,7 @@ import numpy as np
 
 
 def make_hand_mask(img):
+    img = cv.blur(img, (5, 5))
     skin_lower = lambda hue: np.array([hue, 0.05 * 255, 0.05 * 255])
     skin_upper = lambda hue: np.array([hue, 0.9 * 255, 0.8 * 255])
 
@@ -22,6 +23,6 @@ def get_hand_contour(mask):
 
 
 def get_convex_hull(contour):
-    hull = cv.convexHull(contour)
-    # defects = cv.convexityDefects(contour, hull)
-    return hull
+    hull = cv.convexHull(contour, returnPoints=False)
+    defects = cv.convexityDefects(contour, hull)
+    return hull, defects
