@@ -1,4 +1,7 @@
 import math
+from queue import Queue
+from threading import Event
+
 import cv2 as cv
 import numpy as np
 
@@ -74,8 +77,6 @@ def main():
 
         cv.imshow('output', drawing)
         cv.imshow('capture', frame)
-        # cv.imshow('extracted', extracted)
-        # cv.imshow('blurred', blurred)
         cv.imshow('threshed', thresh)
 
         key = cv.waitKey(10) & 0xff
@@ -89,10 +90,21 @@ def main():
 
 
 def detector_test():
-    det = Detector()
+    q_out = Queue()
+    start_capture_event = Event()
+    stop_capture_event = Event()
+    det = Detector(q_out, start_capture_event, stop_capture_event)
+    det.start()
 
     while True:
-        print(det.count())
+        user_in = input('>')
+        if user_in == 's':
+            start_capture_event.set()
+            for i in range(10):
+                ct = q_out.get()    # blocking get on queue
+                print(ct)
+            stop_capture_event.set()
+
 
 if __name__ == '__main__':
     # main()
