@@ -5,6 +5,7 @@ from threading import Thread
 import cv2 as cv
 import numpy as np
 
+
 """
     Class used for deciding recognized fingers count.
     Since it is a subclass of thread, read these few lines and constructor parameters to get it working properly.
@@ -27,13 +28,13 @@ class Detector(Thread):
     :param Event start_capture_event: event used to notify detector that it can start detecting (and writing a result)
     :param Event stop_capture_event: event used to notify detector that it can stop detecting (and clear a queue)
     """
-    def __init__(self, q_out, start_capture_event, stop_capture_event):
+    def __init__(self, q_out, start_capture_evt, stop_capture_evt):
         super(Detector, self).__init__()
 
         self._q_out = q_out
-        self._start_capture_event = start_capture_event
-        self._stop_capture_event = stop_capture_event
-        self._is_capturing = False
+        self._start_capture_evt = start_capture_evt
+        self._stop_capture_evt = stop_capture_evt
+        self.is_capturing = False
 
         self._cap = cv.VideoCapture(0)
         self._bg_subtractor_learning_rate = 0
@@ -42,40 +43,11 @@ class Detector(Thread):
         frame_height = int(self._cap.get(cv.CAP_PROP_FRAME_HEIGHT))
         self._roi_points = ((0, 0), (frame_width // 2, frame_height - 1))
 
-    def join(self, timeout=None):
-        self._cap.release()
-        cv.destroyAllWindows()
-        super(Detector, self).join(timeout)
-
-    def _stop_capturing(self):
-        self._is_capturing = False
-        self._stop_capture_event.clear()
-        with self._q_out.mutex:
-            self._q_out.queue.clear()
-
-    def _start_capturing(self):
-        self._is_capturing = True
-        self._start_capture_event.clear()
-
-    def _reset_subtractor(self):
-        self._subtractor = cv.createBackgroundSubtractorMOG2(varThreshold=0)
-
-    def _add_result(self, count):
-        if self._is_capturing is False:
-            return
-
-        # Try to put an item in the queue, if it's full empty it
-        try:
-            self._q_out.put(count, timeout=0.1)
-        except Full:
-            with self._q_out.mutex:
-                self._q_out.queue.clear()
-
     def run(self):
         while True:
-            if self._start_capture_event.is_set():
+            if self._start_capture_evt.is_set():
                 self._start_capturing()
-            if self._stop_capture_event.is_set():
+            if self._stop_capture_evt.is_set():
                 self._stop_capturing()
 
             _, frame = self._cap.read()
@@ -136,3 +108,38 @@ class Detector(Thread):
                 self._reset_subtractor()
 
             self._add_result(count)
+
+            if count is None or count == 1:
+                self._stop_capture_evt.set()
+            else:
+                self._start_capture_evt.set()
+
+
+    def join(self, timeout=None):
+        self._cap.release()
+        cv.destroyAllWindows()
+        super(Detector, self).join(timeout)
+
+    def _stop_capturing(self):
+        self.is_capturing = False
+        self._stop_capture_evt.clear()
+        with self._q_out.mutex:
+            self._q_out.queue.clear()
+
+    def _start_capturing(self):
+        self.is_capturing = True
+        self._start_capture_evt.clear()
+
+    def _reset_subtractor(self):
+        self._subtractor = cv.createBackgroundSubtractorMOG2(varThreshold=0)
+
+    def _add_result(self, count):
+        if self.is_capturing is False:
+            return
+
+        # Try to put an item in the queue, if it's full empty it
+        try:
+            self._q_out.put(count, timeout=0.1)
+        except Full:
+            with self._q_out.mutex:
+                self._q_out.queue.clear()

@@ -1,10 +1,11 @@
 import math
-from queue import Queue
+from queue import Queue, Empty
 from threading import Event
 
 import cv2 as cv
 import numpy as np
 
+from arbiter import Arbiter
 from detector import Detector
 
 
@@ -91,21 +92,33 @@ def main():
 
 def detector_test():
     q_out = Queue()
-    start_capture_event = Event()
-    stop_capture_event = Event()
-    det = Detector(q_out, start_capture_event, stop_capture_event)
+    start_capture_evt = Event()
+    stop_capture_evt = Event()
+    det = Detector(q_out, start_capture_evt, stop_capture_evt)
     det.start()
 
     while True:
-        user_in = input('>')
-        if user_in == 's':
-            start_capture_event.set()
-            for i in range(10):
-                ct = q_out.get()    # blocking get on queue
+        start_capture_evt.wait()
+        while det.is_capturing:
+            try:
+                ct = q_out.get(timeout=0.1)
                 print(ct)
-            stop_capture_event.set()
+            except Empty:
+                pass
+        print('--- Ended capturing ---')
+
+def arbiter():
+    ar = Arbiter()
+    ar.start()
+
+    while True:
+        ar.input_detected_evt.wait()
+        count = ar.q_out.get()
+        print('The count is: %s' % count)
+        ar.input_detected_evt.clear()
 
 
 if __name__ == '__main__':
     # main()
-    detector_test()
+    # detector_test()
+    arbiter()
