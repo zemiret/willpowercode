@@ -24,7 +24,6 @@ class Arbiter(Thread):
         self._detector = Detector(self._q_capture, self._start_capture_evt, self._stop_capture_evt)
         self._detector.start()
 
-
     def run(self):
         while True:
             self._start_capture_evt.wait()
