@@ -1,12 +1,13 @@
+from curses import wrapper
 from queue import Queue, Empty
 
 import cv2 as cv
 
 from detector import Detector
+from generator.test import TestGenerator
 
 
-def main():
-    cap = cv.VideoCapture(0)
+def setup_detector(cap):
     detector_q_ui_in = Queue()
     detector_q_ui_out = Queue()
     detector_q_input_in = Queue()
@@ -23,25 +24,41 @@ def main():
                         detector_q_input_out,
                         roi)
 
+    return detector, detector_q_ui_in, detector_q_ui_out, detector_q_input_in, detector_q_input_out
+
+
+def display_results(res):
+    cv.imshow('output', res[0])
+    cv.imshow('frame', res[1])
+    cv.imshow('threshed', res[2])
+
+
+def main(stdscr):
+    cap = cv.VideoCapture(0)
+
+    detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
     detector.start()
+
+    gen = TestGenerator()
+    gen.display(stdscr)
 
     while True:
         _, frame = cap.read()
-        detector_q_ui_in.put(frame)
-        res = detector_q_ui_out.get()
+        d_ui_in.put(frame)
+        res = d_ui_out.get()
 
         try:
-            res_out = detector_q_input_out.get_nowait()
-            print(res_out)
+            res_out = d_input_out.get_nowait()
+
+            gen.handle_input(stdscr, res_out)
+            gen.display(stdscr)
+#            print(res_out)
         except Empty:
             pass
 
-        cv.imshow('output', res[0])
-        cv.imshow('frame', res[1])
-        cv.imshow('threshed', res[2])
+        display_results(res)
 
         key = cv.waitKey(10) & 0xff
-
         if key == ord('q'):
             detector.stop()
             detector.join()
@@ -49,8 +66,10 @@ def main():
             cv.destroyAllWindows()
             break
         else:
-            detector_q_input_in.put(key)
+            d_input_in.put(key)
 
 
 if __name__ == "__main__":
-    main()
+    wrapper(main)
+
+
