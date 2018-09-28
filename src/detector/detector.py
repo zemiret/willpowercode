@@ -1,5 +1,5 @@
 import math
-from queue import Empty
+from queue import Empty, Full
 from collections import Counter
 from threading import Thread, Event
 
@@ -16,11 +16,16 @@ class Detector(Thread):
         The detector works for counting fingers, there is one quirk though - it does not detect the empty hand and treats
         it as one.
     """
-    def __init__(self, q_ui_in, q_ui_out, q_input_in, q_input_out, roi):
+    def __init__(self, q_ui_in, q_ui_out, q_input_in, q_input_out, roi, **kwargs):
         """
-        TODO: Describe parameters
+        Args:
+            q_ui_in (Queue): Queue for pushing registered frame
+            q_ui_out (Queue): Queue that the results will be pushed to as a triplet (output, threshed, input)
+            q_input_in (Queue): Queue that the input can be pushed into
+            q_input_out (Queue): Queue that the output from the detector will be put into (the most important one!)
+            roi (tuple): A tuple of points that span the rectangular ROI (region of interest)
         """
-        super(Detector, self).__init__()
+        super(Detector, self).__init__(**kwargs)
 
         self._q_ui_in = q_ui_in
         self._q_ui_out = q_ui_out
@@ -34,6 +39,7 @@ class Detector(Thread):
         self._capture_counter = Counter()
 
         self._stop_evt = Event()
+        self._erode_iterations = 1
 
     def _reset_subtractor(self):
         self._subtractor = cv.createBackgroundSubtractorMOG2(varThreshold=0)
@@ -41,15 +47,23 @@ class Detector(Thread):
     def _handle_input(self, user_input):
         if user_input == ord('c'):
             self._reset_subtractor()
+        elif user_input == ord('m'):
+            self._erode_iterations += 1
+        elif user_input == ord('l'):
+            if self._erode_iterations > 0:
+                self._erode_iterations -= 1
 
-    def join(self, timeout=None):
+    def stop(self):
         self._stop_evt.set()
-        super(Detector, self).join(timeout)
+
+    def stopped(self):
+        return self._stop_evt.is_set()
 
     def run(self):
         while True:
-            if self._stop_evt.is_set():
-                break
+            if self.stopped():
+                print('Stopping detector')
+                return
 
             try:
                 user_input = self._q_input_in.get_nowait()
@@ -57,7 +71,11 @@ class Detector(Thread):
             except Empty:
                 pass
 
-            frame = self._q_ui_in.get()    # blocking get
+            try:
+                frame = self._q_ui_in.get_nowait()   # not blocking get, for otherwise the thread cannot be joined
+            except Empty:
+                continue
+
             frame = cv.bilateralFilter(frame, 5, 50, 100)
 
             roi_p1 = self._roi_points[0]
@@ -67,7 +85,7 @@ class Detector(Thread):
 
             fgmask = self._subtractor.apply(roi, learningRate=self._bg_subtractor_learning_rate)
             kernel = np.ones((3, 3), np.uint8)
-            fgmask = cv.erode(fgmask, kernel, iterations=2)
+            fgmask = cv.erode(fgmask, kernel, iterations=self._erode_iterations)
             extracted = cv.bitwise_and(roi, roi, mask=fgmask)
             extracted = cv.cvtColor(extracted, cv.COLOR_BGR2GRAY)
 
@@ -97,6 +115,7 @@ class Detector(Thread):
                             end = tuple(max_contour[e][0])
                             far = tuple(max_contour[f][0])
 
+                            a = (end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2
                             b = (far[0] - start[0]) ** 2 + (far[1] - start[1]) ** 2
                             c = (end[0] - far[0]) ** 2 + (end[1] - far[1]) ** 2
                             angle = math.acos((b + c - a) / (2 * math.sqrt(b * c)))  # cosine theorem
@@ -113,4 +132,7 @@ class Detector(Thread):
             else:
                 self._capture_counter[count] += 1
 
-            self._q_ui_out.put((drawing, frame, thresh))
+            try:
+                self._q_ui_out.put_nowait((drawing, frame, thresh))
+            except Full:
+                pass

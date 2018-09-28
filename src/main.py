@@ -43,9 +43,11 @@ def main():
         key = cv.waitKey(10) & 0xff
 
         if key == ord('q'):
-            # TODO: This ain't working nicely for some reason
+            detector.stop()
             detector.join()
-            exit(0)
+            cap.release()
+            cv.destroyAllWindows()
+            break
         else:
             detector_q_input_in.put(key)
 
