@@ -4,6 +4,8 @@ from queue import Queue, Empty
 import cv2 as cv
 
 from detector import Detector
+# from generator.base import GeneratorMaster
+import generator.base
 from generator.test import TestGenerator
 
 
@@ -16,7 +18,8 @@ def setup_detector(cap):
     frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
-    roi = ((frame_width // 2, 0), (frame_width - 1, frame_height - 1))
+    # roi = ((frame_width // 2, 0), (frame_width - 1, frame_height - 1))
+    roi = ((0, 0), (frame_width // 2, frame_height - 1))
 
     detector = Detector(detector_q_ui_in,
                         detector_q_ui_out,
@@ -39,7 +42,7 @@ def main(stdscr):
     detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
     detector.start()
 
-    gen = TestGenerator()
+    gen = generator.base.GeneratorMaster()
     gen.display(stdscr)
 
     while True:
@@ -48,11 +51,15 @@ def main(stdscr):
         res = d_ui_out.get()
 
         try:
-            res_out = d_input_out.get_nowait()
+            try:
+                res_out = d_input_out.get_nowait()
+                res_out = int(res_out) - 2      # This shall normalize the output to be 0, 1, 2, 3
+                # print(res_out)
 
-            gen.handle_input(stdscr, res_out)
-            gen.display(stdscr)
-#            print(res_out)
+                gen.handle_input(res_out)
+                gen.display(stdscr)
+            except ValueError:
+                pass
         except Empty:
             pass
 
