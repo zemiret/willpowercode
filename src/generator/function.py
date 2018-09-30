@@ -1,13 +1,16 @@
-import generator.base as base
+from generator.base import GeneratorMaster, Generator
 
 
-class FunctionGenerator(base.Generator):
-    caption = 'Funcitons'
+class FunctionGenerator(Generator):
+    caption = 'Functions'
+
+    def reset(self):
+        pass
 
     def display(self, screen):
         screen.clear()
-        screen.add_str("You're in funciton generator")
+        screen.addstr("You're in function generator")
         screen.refresh()
 
     def handle_input(self, u_in):
-        base.GeneratorMaster().reset_state()
+        GeneratorMaster().reset_state()

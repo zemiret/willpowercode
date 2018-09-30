@@ -4,9 +4,7 @@ from queue import Queue, Empty
 import cv2 as cv
 
 from detector import Detector
-# from generator.base import GeneratorMaster
-import generator.base
-from generator.test import TestGenerator
+from generator import GeneratorMaster, TopLevelGenerator
 
 
 def setup_detector(cap):
@@ -30,6 +28,13 @@ def setup_detector(cap):
     return detector, detector_q_ui_in, detector_q_ui_out, detector_q_input_in, detector_q_input_out
 
 
+def setup_generator():
+    gen = GeneratorMaster()
+    gen.set_start_state(TopLevelGenerator())
+    gen.reset_state()
+    return gen
+
+
 def display_results(res):
     cv.imshow('output', res[0])
     cv.imshow('frame', res[1])
@@ -42,7 +47,7 @@ def main(stdscr):
     detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
     detector.start()
 
-    gen = generator.base.GeneratorMaster()
+    gen = setup_generator()
     gen.display(stdscr)
 
     while True:
@@ -54,7 +59,6 @@ def main(stdscr):
             try:
                 res_out = d_input_out.get_nowait()
                 res_out = int(res_out) - 2      # This shall normalize the output to be 0, 1, 2, 3
-                # print(res_out)
 
                 gen.handle_input(res_out)
                 gen.display(stdscr)

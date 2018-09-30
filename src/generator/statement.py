@@ -1,13 +1,16 @@
-import generator.base as base
+from generator.base import Generator, GeneratorMaster
 
 
-class StatementGenerator(base.Generator):
+class StatementGenerator(Generator):
     caption = 'Statements'
 
     def display(self, screen):
         screen.clear()
-        screen.add_str("You're in statement generator")
+        screen.addstr("You're in statement generator")
         screen.refresh()
 
     def handle_input(self, u_in):
-        base.GeneratorMaster().reset_state()
+        GeneratorMaster().reset_state()
+
+    def reset(self):
+        pass

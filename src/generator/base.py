@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Generator(ABC):
     @abstractmethod
     def display(self, screen):
@@ -9,17 +10,28 @@ class Generator(ABC):
     def handle_input(self, u_in):
         pass
 
+    @abstractmethod
+    def reset(self):
+        """
+        Should restore the generator object to the state in which it can be added to the genrators tree
+        """
+        pass
+
 
 class GeneratorMaster(object):
     class __SingletonStub(object):
         def __init__(self):
+            self._start_state = None
             self._current_state = None
             self._state_chain = []
-            self.reset_state()
+
+        def set_start_state(self, start_state):
+            self._start_state = start_state
 
         def reset_state(self):
+            self._start_state.reset()
             self._state_chain = []
-            self.append_state(TopLevelGenerator())
+            self.append_state(self._start_state)
 
         def display(self, screen):
             self._current_state.display(screen)
@@ -42,50 +54,5 @@ class GeneratorMaster(object):
 
     def __getattr__(self, item):
         return getattr(self.__instance, item)
-
-
-class TopLevelGenerator(Generator):
-    @property
-    def caption(self):
-        return self._caption
-
-    def __init__(self):
-        self._caption = 'Top level'
-
-        import generator.statement as statement
-        import generator.function as fun
-
-        master = GeneratorMaster()
-        self._options = {
-            '0': {
-                'caption': statement.StatementGenerator.caption,
-                'action': lambda: master.append_state(statement.StatementGenerator())
-            },
-            '1': {
-                'caption': fun.FunctionGenerator.caption,
-                'action': lambda: master.append_state(fun.FunctionGenerator())
-            },
-            '2': {
-                'caption': statement.StatementGenerator.caption,
-                'action': lambda: master.append_state(statement.StatementGenerator())
-            },
-            '3': {
-                'caption': fun.FunctionGenerator.caption,
-                'action': lambda: master.append_state(fun.FunctionGenerator())
-            },
-        }
-
-    def display(self, screen):
-        screen.clear()
-        for i, (key, val) in enumerate(self._options.items()):
-            screen.addstr(i, 0, key + ': ' + self._options[key]['caption'])
-        screen.refresh()
-
-    def handle_input(self, u_in):
-        int_in = int(u_in)
-        if not 0 <= int_in <= 3:
-            return
-
-        self._options[str(u_in)]['action']()
 
 
