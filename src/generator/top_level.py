@@ -34,7 +34,7 @@ class TopLevelGenerator(Generator):
     def display(self, screen):
         screen.clear()
         for i, (key, val) in enumerate(self._options.items()):
-            screen.addstr(i, 0, key + ': ' + self._options[key]['caption'])
+            screen.addstr(i, 0, str(key + 2) + ': ' + self._options[key]['caption'])
         screen.refresh()
 
     def handle_input(self, u_in):
