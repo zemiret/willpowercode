@@ -1,3 +1,7 @@
+import os
+import subprocess
+
+import tempfile
 from abc import ABC, abstractmethod
 
 
@@ -18,9 +22,40 @@ class Generator(ABC):
         pass
 
 
+class Commander(object):
+    def __init__(self, output_file):
+        self._command_chain = []
+        self._output_file = output_file
+        self._save_and_quit_command = \
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), 'scripts', 'common', 'save_and_quit')
+
+    def append_command(self, command_path):
+        self._command_chain.append(command_path)
+
+    def pop_command(self):
+        self._command_chain.pop()
+
+    def execute(self):
+        command_file = tempfile.NamedTemporaryFile('a+b')
+        for command in self._command_chain:
+            with open(command, 'r') as command_content:
+                command_file.write(command_content.read())
+
+        with open(self._save_and_quit_command, 'r') as quit_cmd:
+            command_file.write(quit_cmd.read())
+
+        subprocess.run(['vim', '-s', command_file, self._output_file])
+        command_file.close()
+
+    def clear_commands(self):
+        self._command_chain = []
+
+
 class GeneratorMaster(object):
     class __SingletonStub(object):
-        def __init__(self):
+        def __init__(self, output_file):
+            self.commander = Commander(output_file)
+
             self._start_state = None
             self._current_state = None
             self._state_chain = []
