@@ -1,3 +1,4 @@
+import os
 from curses import wrapper
 from queue import Queue, Empty
 
@@ -29,7 +30,8 @@ def setup_detector(cap):
 
 
 def setup_generator():
-    gen = GeneratorMaster()
+    output_file = os.path.join(os.path.realpath(os.environ['HOME']), 'tmp', 'willpower.out')
+    gen = GeneratorMaster(output_file)
     gen.set_start_state(TopLevelGenerator())
     gen.reset_state()
     return gen

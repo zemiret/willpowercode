@@ -4,6 +4,8 @@ import subprocess
 import tempfile
 from abc import ABC, abstractmethod
 
+from utils.common import abs_path
+
 
 class Generator(ABC):
     @abstractmethod
@@ -26,8 +28,7 @@ class Commander(object):
     def __init__(self, output_file):
         self._command_chain = []
         self._output_file = output_file
-        self._save_and_quit_command = \
-            os.path.join(os.path.dirname(os.path.realpath(__file__)), 'scripts', 'common', 'save_and_quit')
+        self._save_and_quit_command = abs_path(__file__, 'scripts', 'common', 'save_and_quit')
 
     def append_command(self, command_path):
         self._command_chain.append(command_path)
@@ -36,16 +37,18 @@ class Commander(object):
         self._command_chain.pop()
 
     def execute(self):
-        command_file = tempfile.NamedTemporaryFile('a+b')
-        for command in self._command_chain:
-            with open(command, 'r') as command_content:
-                command_file.write(command_content.read())
+        with tempfile.NamedTemporaryFile('a+') as command_file:
+            for command in self._command_chain:
+                with open(command, 'r') as command_content:
+                    command_file.write(command_content.read())
 
-        with open(self._save_and_quit_command, 'r') as quit_cmd:
-            command_file.write(quit_cmd.read())
+            with open(self._save_and_quit_command, 'r') as quit_cmd:
+                command_file.write(quit_cmd.read())
 
-        subprocess.run(['vim', '-s', command_file, self._output_file])
-        command_file.close()
+            subprocess.run(['vim', '-s', os.path.realpath(command_file.name), self._output_file], shell=False)
+            command_file.close()
+
+            self.clear_commands()
 
     def clear_commands(self):
         self._command_chain = []
@@ -83,9 +86,12 @@ class GeneratorMaster(object):
 
     __instance = None
 
-    def __init__(self):
+    def __init__(self, output_file=None):
         if GeneratorMaster.__instance is None:
-            GeneratorMaster.__instance = GeneratorMaster.__SingletonStub()
+            if output_file is None:
+                raise AttributeError('The initialization of GeneratorMaster requires output_file supplied!')
+
+            GeneratorMaster.__instance = GeneratorMaster.__SingletonStub(output_file)
 
     def __getattr__(self, item):
         return getattr(self.__instance, item)
