@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 
 import tempfile
@@ -41,6 +42,9 @@ class Commander(object):
             for command in self._command_chain:
                 with open(command, 'r') as command_content:
                     command_file.write(command_content.read())
+
+            shutil.copyfile(os.path.realpath(command_file.name), '/Users/antoni.mleczko/tmp/commands')
+            print(command_file.name)
 
             with open(self._save_and_quit_command, 'r') as quit_cmd:
                 command_file.write(quit_cmd.read())
