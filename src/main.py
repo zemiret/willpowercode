@@ -58,15 +58,12 @@ def main(stdscr):
         res = d_ui_out.get()
 
         try:
-            try:
-                res_out = d_input_out.get_nowait()
-                res_out = int(res_out) - 2      # This shall normalize the output to be 0, 1, 2, 3
+            res_out = d_input_out.get_nowait()
+            res_out = int(res_out) - 2      # This shall normalize the output to be 0, 1, 2, 3
 
-                gen.handle_input(res_out)
-                gen.display(stdscr)
-            except ValueError:
-                pass
-        except Empty:
+            gen.handle_input(res_out)
+            gen.display(stdscr)
+        except (Empty, ValueError):
             pass
 
         display_results(res)
