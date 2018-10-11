@@ -40,7 +40,7 @@ def main():
     KEY_UP = 3
 
     curses.initscr()
-    win = curses.newwin(20, 60, 0, 0)
+    win = curses.newwin(30, 100, 0, 0)
     win.keypad(1)
     curses.noecho()
     curses.curs_set(0)
@@ -69,7 +69,7 @@ def main():
         win.addstr(0, 2, 'Score : ' + str(score) + ' ')  # Printing 'Score' and
         win.addstr(0, 27, ' SNAKE ')  # 'SNAKE' strings
         # win.timeout(250 - int(len(snake) / 5 + len(snake) / 10) % 120)  # Increases the speed of Snake as its length increases
-        win.timeout(250)  # Increases the speed of Snake as its length increases
+        win.timeout(120)  # Increases the speed of Snake as its length increases
 
         prevKey = key  # Previous key pressed
 
@@ -88,10 +88,10 @@ def main():
                          snake[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)])
 
         # If snake crosses the boundaries, make it enter from the other side
-        if snake[0][0] == 0: snake[0][0] = 18
-        if snake[0][1] == 0: snake[0][1] = 58
-        if snake[0][0] == 19: snake[0][0] = 1
-        if snake[0][1] == 59: snake[0][1] = 1
+        if snake[0][0] == 0: snake[0][0] = 28
+        if snake[0][1] == 0: snake[0][1] = 98
+        if snake[0][0] == 29: snake[0][0] = 1
+        if snake[0][1] == 99: snake[0][1] = 1
 
         # Exit if snake crosses the boundaries (Uncomment to enable)
         # if snake[0][0] == 0 or snake[0][0] == 19 or snake[0][1] == 0 or snake[0][1] == 59: break
@@ -103,13 +103,15 @@ def main():
             food = []
             score += 1
             while food == []:
-                food = [randint(1, 18), randint(1, 58)]  # Calculating next food's coordinates
+                food = [randint(1, 28), randint(1, 98)]  # Calculating next food's coordinates
                 if food in snake: food = []
             win.addch(food[0], food[1], '*')
         else:
             last = snake.pop()  # [1] If it does not eat the food, length decreases
             win.addch(last[0], last[1], ' ')
         win.addch(snake[0][0], snake[0][1], '#')
+
+        win.refresh()
 
         keyboard_key = cv.waitKey(10) & 0xff
         if keyboard_key == ord('q'):
@@ -123,7 +125,6 @@ def main():
 
     curses.endwin()
     print("\nScore - " + str(score))
-    print("http://bitemelater.in\n")
 
 
 if __name__ == "__main__":

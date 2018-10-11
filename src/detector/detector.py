@@ -62,7 +62,6 @@ class Detector(Thread):
     def run(self):
         while True:
             if self.stopped():
-                print('Stopping detector')
                 return
 
             try:
