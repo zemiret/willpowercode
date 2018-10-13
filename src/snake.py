@@ -34,13 +34,18 @@ def display_results(res):
 
 
 def main():
+    out = open('/Users/antoni.mleczko/tmp/snake_out', 'a+')
+
     KEY_RIGHT = 0
     KEY_DOWN = 1
     KEY_LEFT = 2
     KEY_UP = 3
 
+    window_height = 30
+    window_width = 100
+
     curses.initscr()
-    win = curses.newwin(30, 100, 0, 0)
+    win = curses.newwin(window_height, window_width, 0, 0)
     win.keypad(1)
     curses.noecho()
     curses.curs_set(0)
@@ -75,11 +80,18 @@ def main():
 
         try:
             key = d_input_out.get_nowait()
-            key = int(key) - 2      # This shall normalize the output to be 0, 1, 2, 3
+            key = int(key) - 2  # This shall normalize the output to be 0, 1, 2, 3
         except (Empty, ValueError):
             pass
 
         display_results(res)
+
+        if key != prevKey:
+            out.write('Key changed %s -> %s\n' % (prevKey, key))
+            out.flush()
+
+        if (key - prevKey) % 2 == 0:
+            key = prevKey
 
         if key not in [KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN, 27]:  # If an invalid key is pressed
             key = prevKey
@@ -88,23 +100,31 @@ def main():
                          snake[0][1] + (key == KEY_LEFT and -1) + (key == KEY_RIGHT and 1)])
 
         # If snake crosses the boundaries, make it enter from the other side
-        if snake[0][0] == 0: snake[0][0] = 28
-        if snake[0][1] == 0: snake[0][1] = 98
-        if snake[0][0] == 29: snake[0][0] = 1
-        if snake[0][1] == 99: snake[0][1] = 1
-
-        # Exit if snake crosses the boundaries (Uncomment to enable)
-        # if snake[0][0] == 0 or snake[0][0] == 19 or snake[0][1] == 0 or snake[0][1] == 59: break
+        if snake[0][0] == 0:
+            snake[0][0] = window_height - 2
+        if snake[0][1] == 0:
+            snake[0][1] = window_width - 2
+        if snake[0][0] == window_height - 1:
+            snake[0][0] = 1
+        if snake[0][1] == window_width - 1:
+            snake[0][1] = 1
 
         # If snake runs over itself
-        if snake[0] in snake[1:]: break
+        if snake[0] in snake[1:]:
+            out.close()
+            detector.stop()
+            detector.join()
+            cap.release()
+            cv.destroyAllWindows()
+            # break
 
         if snake[0] == food:  # When snake eats the food
             food = []
             score += 1
-            while food == []:
+            while not food:
                 food = [randint(1, 28), randint(1, 98)]  # Calculating next food's coordinates
-                if food in snake: food = []
+                if food in snake:
+                    food = []
             win.addch(food[0], food[1], '*')
         else:
             last = snake.pop()  # [1] If it does not eat the food, length decreases
