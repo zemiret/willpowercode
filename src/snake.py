@@ -52,6 +52,14 @@ def main():
     win.border(0)
     win.nodelay(1)
 
+    # instructions_win_height = 20
+    # instructions_win_width = 40
+    # instructions_win = curses.newwin(instructions_win_height, instructions_win_width, 0, window_width + 5)
+    # instructions_win.addstr(2, 0, '> 2 fingers')
+    # instructions_win.addstr(2, 3, 'v 3 fingers')
+    # instructions_win.addstr(2, 5, '< 4 fingers')
+    # instructions_win.addstr(2, 7, '^ 5 fingers')
+
     key = KEY_RIGHT  # Initializing values
     score = 0
 
