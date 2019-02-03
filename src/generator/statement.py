@@ -1,4 +1,4 @@
-from generator.base import Generator, GeneratorMaster
+from generator import Generator, GeneratorMaster
 
 
 class StatementGenerator(Generator):

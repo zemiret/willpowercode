@@ -1,6 +1,4 @@
-from generator.base import GeneratorMaster, Generator
-from generator.function import FunctionGenerator
-from generator.statement import StatementGenerator
+from generator import Generator, GeneratorMaster, FunctionGenerator, StatementGenerator, NumericKeypad
 
 
 class TopLevelGenerator(Generator):
@@ -14,8 +12,8 @@ class TopLevelGenerator(Generator):
         
         self._options = {
             '0': {
-                'caption': StatementGenerator.caption,
-                'action': lambda: master.append_state(StatementGenerator())
+                'caption': NumericKeypad.caption,
+                'action': lambda: master.append_state(NumericKeypad())
             },
             '1': {
                 'caption': FunctionGenerator.caption,

@@ -43,7 +43,8 @@ class Commander(object):
                 with open(command, 'r') as command_content:
                     command_file.write(command_content.read())
 
-            shutil.copyfile(os.path.realpath(command_file.name), '/Users/antoni.mleczko/tmp/commands')
+            # shutil.copyfile(os.path.realpath(command_file.name), os.path.join(os.environ['HOME'], '/tmp/commands'))
+            # shutil.copyfile(os.path.realpath(command_file.name), '/Users/antoni.mleczko/tmp/commands')
             print(command_file.name)
 
             with open(self._save_and_quit_command, 'r') as quit_cmd:
@@ -82,7 +83,8 @@ class GeneratorMaster(object):
             self._current_state.handle_input(u_in)
 
         def pop_state(self):
-            self._state_chain.pop()
+            if len(self._state_chain) > 0:
+                self._state_chain.pop()
 
         def append_state(self, state):
             self._state_chain.append(state)

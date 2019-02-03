@@ -60,7 +60,7 @@ def main(stdscr):
         try:
             try:
                 res_out = d_input_out.get_nowait()
-                res_out = int(res_out) - 2      # This shall normalize the output to be 0, 1, 2, 3
+                res_out = int(res_out) - 2  # This shall normalize the output to be 0, 1, 2, 3
 
                 gen.handle_input(res_out)
                 gen.display(stdscr)
@@ -82,7 +82,28 @@ def main(stdscr):
             d_input_in.put(key)
 
 
+def keyboard_main(stdscr):
+    gen = setup_generator()
+    # gen.display(stdscr)
+
+    keymap = {
+        '260': '0',  # left
+        '259': '1',  # top
+        '261': '2',  # right
+        '258': '3',  # down
+    }
+
+    while True:
+        gen.display(stdscr)
+        ch = stdscr.getch()
+
+        if ch == 113 or ch == 27:
+            break
+
+        if str(ch) in keymap:
+            gen.handle_input(keymap[str(ch)])
+
+
 if __name__ == "__main__":
-    wrapper(main)
-
-
+    # wrapper(main)
+    wrapper(keyboard_main)

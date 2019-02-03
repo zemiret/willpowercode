@@ -1,4 +1,4 @@
-from generator.base import GeneratorMaster, Generator
+from generator import GeneratorMaster, Generator
 
 
 class FunctionGenerator(Generator):
