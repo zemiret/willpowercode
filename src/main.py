@@ -63,9 +63,9 @@ def setup_detector(cap):
     return detector, detector_q_ui_in, detector_q_ui_out, detector_q_input_in, detector_q_input_out
 
 
-def setup_generator():
+def setup_generator(screen):
     output_file = os.path.join(os.path.realpath(os.environ['HOME']), 'tmp', 'willpower.out')
-    gen = GeneratorMaster(output_file)
+    gen = GeneratorMaster(screen, output_file)
     gen.set_start_state(TopLevelGenerator())
     gen.reset_state()
     return gen
@@ -89,9 +89,19 @@ def get_detector_output(d_input_out):
     return res_out
 
 
+# --- TESTING BELOW ---
+def simulate_keypad_input():
+    yield 0
+    while True:
+        yield 0
+        yield 2
+        yield 1
+        yield 2
+
+
 def keyboard_main(stdscr):
-    gen = setup_generator()
-    # gen.display(stdscr)
+    gen = setup_generator(stdscr)
+    gen.display()
 
     keymap = {
         '260': '0',  # left
@@ -104,8 +114,14 @@ def keyboard_main(stdscr):
         '51': '3',  # down
     }
 
+    # keypad_gen = simulate_keypad_input()
     while True:
-        gen.display(stdscr)
+        gen.display()
+
+        # TODO: Test purposes here:
+        # ch = next(keypad_gen)
+        # gen.handle_input(str(ch))
+
         ch = stdscr.getch()
 
         if ch == 113 or ch == 27:
@@ -116,5 +132,5 @@ def keyboard_main(stdscr):
 
 
 if __name__ == "__main__":
-    wrapper(main)
-    # wrapper(keyboard_main)
+    # wrapper(main)
+    wrapper(keyboard_main)
