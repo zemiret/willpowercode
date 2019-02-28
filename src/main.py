@@ -7,6 +7,7 @@ import cv2 as cv
 from detector import Detector
 from generator import GeneratorMaster, TopLevelGenerator
 
+# TODO: Change generator file organization. They will boom!
 
 def main(stdscr):
     cap = cv.VideoCapture(0)

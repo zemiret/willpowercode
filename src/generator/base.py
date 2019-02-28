@@ -7,6 +7,7 @@ from utils.common import abs_path
 
 
 class Generator(ABC):
+    # TODO: Most generators will have the same "map to action" logic. Consider generalization
     @abstractmethod
     def display(self, screen):
         pass
@@ -29,6 +30,7 @@ class Commander(object):
         self._output_file = output_file
         self._save_and_quit_command = abs_path(__file__, 'scripts', 'common', 'save_and_quit')
 
+        # TODO: Think of a better way to create temporary files (however the standard python temp cannot be used)
         self._commands_filepath = os.path.realpath(os.path.join(os.environ['HOME'], 'tmp', 'commands'))
 
     def append_command(self, command_path):
@@ -59,6 +61,7 @@ class Commander(object):
 
 
 class GeneratorMaster(object):
+    # TODO: GeneratorMaster might have too many responsibilities. Think about it.
     class __SingletonStub(object):
         def __init__(self, output_file, screen):
             self.commander = Commander(output_file)
