@@ -133,5 +133,6 @@ def keyboard_main(stdscr):
 
 
 if __name__ == "__main__":
+    # TODO: Test with real detector
     # wrapper(main)
     wrapper(keyboard_main)
