@@ -8,6 +8,40 @@ from detector import Detector
 from generator import GeneratorMaster, TopLevelGenerator
 
 
+def main(stdscr):
+    cap = cv.VideoCapture(0)
+
+    detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
+    detector.start()
+
+    gen = setup_generator()
+    gen.display(stdscr)
+
+    while True:
+        res = read_frame(cap, d_ui_in, d_ui_out)
+
+        try:
+            res_out = get_detector_output(d_input_out)
+
+            print(res_out)
+            # gen.handle_input(res_out)
+            # gen.display(stdscr)
+        except (Empty, ValueError):
+            pass
+
+        display_results(res)
+
+        key = cv.waitKey(10) & 0xff
+        if key == ord('q'):
+            detector.stop()
+            detector.join()
+            cap.release()
+            cv.destroyAllWindows()
+            break
+        else:
+            d_input_in.put(key)
+
+
 def setup_detector(cap):
     detector_q_ui_in = Queue()
     detector_q_ui_out = Queue()
@@ -17,8 +51,8 @@ def setup_detector(cap):
     frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
-    # roi = ((frame_width // 2, 0), (frame_width - 1, frame_height - 1))
-    roi = ((0, 0), (frame_width // 2, frame_height - 1))
+    roi = ((frame_width // 2, 0), (frame_width - 1, frame_height - 1))
+    # roi = ((0, 0), (frame_width // 2, frame_height - 1))
 
     detector = Detector(detector_q_ui_in,
                         detector_q_ui_out,
@@ -43,43 +77,16 @@ def display_results(res):
     cv.imshow('threshed', res[2])
 
 
-def main(stdscr):
-    cap = cv.VideoCapture(0)
+def read_frame(cap, d_ui_in, d_ui_out):
+    _, frame = cap.read()
+    d_ui_in.put(frame)
+    return d_ui_out.get()
 
-    detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
-    detector.start()
 
-    gen = setup_generator()
-    gen.display(stdscr)
-
-    while True:
-        _, frame = cap.read()
-        d_ui_in.put(frame)
-        res = d_ui_out.get()
-
-        try:
-            try:
-                res_out = d_input_out.get_nowait()
-                res_out = int(res_out) - 2  # This shall normalize the output to be 0, 1, 2, 3
-
-                gen.handle_input(res_out)
-                gen.display(stdscr)
-            except ValueError:
-                pass
-        except Empty:
-            pass
-
-        display_results(res)
-
-        key = cv.waitKey(10) & 0xff
-        if key == ord('q'):
-            detector.stop()
-            detector.join()
-            cap.release()
-            cv.destroyAllWindows()
-            break
-        else:
-            d_input_in.put(key)
+def get_detector_output(d_input_out):
+    res_out = d_input_out.get_nowait()
+    res_out = int(res_out) - 2  # This shall normalize the output to be 0, 1, 2, 3
+    return res_out
 
 
 def keyboard_main(stdscr):
@@ -91,6 +98,10 @@ def keyboard_main(stdscr):
         '259': '1',  # top
         '261': '2',  # right
         '258': '3',  # down
+        '48': '0',  # left
+        '49': '1',  # top
+        '50': '2',  # right
+        '51': '3',  # down
     }
 
     while True:
@@ -105,5 +116,5 @@ def keyboard_main(stdscr):
 
 
 if __name__ == "__main__":
-    # wrapper(main)
-    wrapper(keyboard_main)
+    wrapper(main)
+    # wrapper(keyboard_main)
