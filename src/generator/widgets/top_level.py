@@ -1,5 +1,5 @@
-from generator import GeneratorStateMaster
-from generator.widgets import GeneratorWidget
+# from generator import GeneratorStateMaster
+from . import GeneratorWidget
 
 
 class TopLevelGeneratorWidget(GeneratorWidget):
@@ -9,25 +9,25 @@ class TopLevelGeneratorWidget(GeneratorWidget):
 
     def __init__(self):
         self._caption = 'Top level'
-        master = GeneratorStateMaster()
+        # master = GeneratorStateMaster()
         
         self._options = {
-            '0': {
-                'caption': NumericKeypad.caption,
-                'action': lambda: master.append_state(NumericKeypad())
-            },
-            '1': {
-                'caption': FunctionGeneratorWidget.caption,
-                'action': lambda: master.append_state(FunctionGeneratorWidget())
-            },
-            '2': {
-                'caption': StatementGenerator.caption,
-                'action': lambda: master.append_state(StatementGenerator())
-            },
-            '3': {
-                'caption': FunctionGeneratorWidget.caption,
-                'action': lambda: master.append_state(FunctionGeneratorWidget())
-            },
+            # '0': {
+            #     'caption': NumericKeypad.caption,
+            #     'action': lambda: master.append_state(NumericKeypad())
+            # },
+            # '1': {
+            #     'caption': FunctionGeneratorWidget.caption,
+            #     'action': lambda: master.append_state(FunctionGeneratorWidget())
+            # },
+            # '2': {
+            #     'caption': StatementGenerator.caption,
+            #     'action': lambda: master.append_state(StatementGenerator())
+            # },
+            # '3': {
+            #     'caption': FunctionGeneratorWidget.caption,
+            #     'action': lambda: master.append_state(FunctionGeneratorWidget())
+            # },
         }
 
     def display(self, screen):
@@ -45,4 +45,3 @@ class TopLevelGeneratorWidget(GeneratorWidget):
 
     def reset(self):
         pass
-

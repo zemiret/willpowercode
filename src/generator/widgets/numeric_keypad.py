@@ -1,8 +1,9 @@
-from generator import GeneratorWidget, GeneratorStateMaster, Commander
+from generator import GeneratorStateMaster, Commander
 from utils.common import abs_path
+from . import GeneratorWidget
 
 
-class NumericKeypad(GeneratorWidget):
+class NumericKeypadGeneratorWidget(GeneratorWidget):
     caption = 'Numeric keypad'
 
     def __init__(self):

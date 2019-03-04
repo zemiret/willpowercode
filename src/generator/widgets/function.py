@@ -1,4 +1,5 @@
-from generator import GeneratorStateMaster, GeneratorWidget
+from generator import GeneratorStateMaster
+from . import GeneratorWidget
 
 
 class FunctionGeneratorWidget(GeneratorWidget):

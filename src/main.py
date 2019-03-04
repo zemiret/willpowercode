@@ -5,7 +5,7 @@ from queue import Queue, Empty
 import cv2 as cv
 
 from detector import Detector
-from generator import GeneratorStateMaster, Commander, TopLevelGeneratorWidget
+from generator import GeneratorStateMaster, Commander, WidgetsFactory
 
 
 # TODO: Change generator file organization. They will boom!
@@ -70,7 +70,7 @@ def setup_generator(screen):
     Commander(output_file)
 
     gen = GeneratorStateMaster(screen)
-    gen.set_start_state(TopLevelGeneratorWidget())
+    gen.set_start_state(WidgetsFactory.make_top_level())
     gen.reset_state()
     return gen
 
