@@ -1,16 +1,31 @@
 from generator import GeneratorStateMaster, Commander
-from utils.common import abs_path
+from generator.execution_observers.execution_observer import ExecutionObserver
 from . import GeneratorWidget
 
 
 class NumericKeypadGeneratorWidget(GeneratorWidget):
     caption = 'Numeric keypad'
 
-    def __init__(self):
-        master = GeneratorStateMaster()
+    _input_options = {
+        '00': '0',
+        '01': '1',
+        '02': '2',
+        '03': '3',
+        '10': '4',
+        '11': '5',
+        '12': '6',
+        '13': '7',
+        '20': '8',
+        '21': '9',
+    }
+
+    def __init__(self, execution_observer: ExecutionObserver):
+        super().__init__(execution_observer)
         self.result = []
         self._cur_input = ''
         self._input_mode = False
+
+        master = GeneratorStateMaster()
 
         def _set_input_mode_action(input_mode):
             def set_input_mode():
@@ -35,59 +50,6 @@ class NumericKeypadGeneratorWidget(GeneratorWidget):
                 'caption': 'back',
                 'action': lambda: master.pop_state()
             }
-        }
-
-        self._input_options = {
-            '00': {
-                'caption': '0',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script0'))
-            },
-            '01': {
-                'caption': '1',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script1'))
-            },
-            '02': {
-                'caption': '2',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script2'))
-            },
-            '03': {
-                'caption': '3',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script3'))
-            },
-            '10': {
-                'caption': '4',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script4'))
-            },
-            '11': {
-                'caption': '5',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script5'))
-            },
-            '12': {
-                'caption': '6',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script6'))
-            },
-            '13': {
-                'caption': '7',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script7'))
-            },
-            '20': {
-                'caption': '8',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script8'))
-            },
-            '21': {
-                'caption': '9',
-                'action':
-                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script9'))
-            },
         }
 
     def reset(self):
@@ -116,9 +78,10 @@ class NumericKeypadGeneratorWidget(GeneratorWidget):
     def handle_input(self, u_in):
         if not 0 <= int(u_in) <= 3:
             return
+
         if self._input_mode:
             if len(self._cur_input) == 1:
-                self._input_options[self._cur_input + u_in]['action']()
+                self._execution_observer.notify(NumericKeypadGeneratorWidget._input_options[self._cur_input + u_in])
                 self._cur_input = ''
                 self._input_mode = False
             else:

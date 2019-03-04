@@ -1,4 +1,5 @@
 # from generator import GeneratorStateMaster
+from generator.execution_observers.execution_observer import ExecutionObserver
 from . import GeneratorWidget
 
 
@@ -7,7 +8,8 @@ class TopLevelGeneratorWidget(GeneratorWidget):
     def caption(self):
         return self._caption
 
-    def __init__(self):
+    def __init__(self, execution_observer: ExecutionObserver):
+        super().__init__(execution_observer)
         self._caption = 'Top level'
         # master = GeneratorStateMaster()
         

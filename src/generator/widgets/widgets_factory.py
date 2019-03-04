@@ -1,3 +1,5 @@
+from generator.execution_observers import NumericKeypadExecutionObserver, PrintObserver
+from generator.widgets import GeneratorWidget
 from generator.widgets.function import FunctionGeneratorWidget
 from generator.widgets.navigation import NavigationGeneratorWidget
 from generator.widgets.numeric_keypad import NumericKeypadGeneratorWidget
@@ -7,21 +9,21 @@ from .top_level import TopLevelGeneratorWidget
 
 class WidgetsFactory(object):
     @staticmethod
-    def make_navigation():
-        return NavigationGeneratorWidget()
+    def make_navigation(observer=PrintObserver()) -> GeneratorWidget:
+        return NavigationGeneratorWidget(observer)
 
     @staticmethod
-    def make_numeric_keypad():
-        return NumericKeypadGeneratorWidget()
+    def make_numeric_keypad(observer=NumericKeypadExecutionObserver()) -> GeneratorWidget:
+        return NumericKeypadGeneratorWidget(observer)
 
     @staticmethod
-    def make_statement():
-        return StatementGeneratorWidget()
+    def make_statement(observer=PrintObserver()) -> GeneratorWidget:
+        return StatementGeneratorWidget(observer)
 
     @staticmethod
-    def make_top_level():
-        return TopLevelGeneratorWidget()
+    def make_top_level(observer=PrintObserver()) -> GeneratorWidget:
+        return TopLevelGeneratorWidget(observer)
 
     @staticmethod
-    def make_function():
-        return FunctionGeneratorWidget()
+    def make_function(observer=PrintObserver()) -> GeneratorWidget:
+        return FunctionGeneratorWidget(observer)
