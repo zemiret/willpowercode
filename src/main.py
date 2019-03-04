@@ -5,7 +5,8 @@ from queue import Queue, Empty
 import cv2 as cv
 
 from detector import Detector
-from generator import GeneratorMaster, TopLevelGenerator
+from generator import GeneratorStateMaster, Commander, TopLevelGeneratorWidget
+
 
 # TODO: Change generator file organization. They will boom!
 
@@ -66,8 +67,10 @@ def setup_detector(cap):
 
 def setup_generator(screen):
     output_file = os.path.join(os.path.realpath(os.environ['HOME']), 'tmp', 'willpower.out')
-    gen = GeneratorMaster(screen, output_file)
-    gen.set_start_state(TopLevelGenerator())
+    Commander(output_file)
+
+    gen = GeneratorStateMaster(screen)
+    gen.set_start_state(TopLevelGeneratorWidget())
     gen.reset_state()
     return gen
 

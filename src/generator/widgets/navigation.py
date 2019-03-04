@@ -1,7 +1,7 @@
-from generator import Generator, GeneratorMaster
+from generator import GeneratorWidget, GeneratorStateMaster
 
 
-class NavigationGenerator(Generator):
+class NavigationGeneratorWidget(GeneratorWidget):
     caption = 'Navigation'
 
     def reset(self):
@@ -13,4 +13,4 @@ class NavigationGenerator(Generator):
         screen.refresh()
 
     def handle_input(self, u_in):
-        GeneratorMaster().reset_state()
+        GeneratorStateMaster().reset_state()

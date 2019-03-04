@@ -1,12 +1,12 @@
-from generator import Generator, GeneratorMaster
+from generator import GeneratorWidget, GeneratorStateMaster, Commander
 from utils.common import abs_path
 
 
-class NumericKeypad(Generator):
+class NumericKeypad(GeneratorWidget):
     caption = 'Numeric keypad'
 
     def __init__(self):
-        master = GeneratorMaster()
+        master = GeneratorStateMaster()
         self.result = []
         self._cur_input = ''
         self._input_mode = False
@@ -28,7 +28,7 @@ class NumericKeypad(Generator):
             },
             '2': {
                 'caption': 'accept',
-                'action': lambda: master.commander.execute()
+                'action': lambda: Commander().execute()
             },
             '3': {
                 'caption': 'back',
@@ -40,52 +40,52 @@ class NumericKeypad(Generator):
             '00': {
                 'caption': '0',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script0'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script0'))
             },
             '01': {
                 'caption': '1',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script1'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script1'))
             },
             '02': {
                 'caption': '2',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script2'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script2'))
             },
             '03': {
                 'caption': '3',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script3'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script3'))
             },
             '10': {
                 'caption': '4',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script4'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script4'))
             },
             '11': {
                 'caption': '5',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script5'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script5'))
             },
             '12': {
                 'caption': '6',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script6'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script6'))
             },
             '13': {
                 'caption': '7',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script7'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script7'))
             },
             '20': {
                 'caption': '8',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script8'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script8'))
             },
             '21': {
                 'caption': '9',
                 'action':
-                    lambda: master.commander.append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script9'))
+                    lambda: Commander().append_command(abs_path(__file__, 'scripts', 'numeric_keypad', 'script9'))
             },
         }
 

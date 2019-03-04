@@ -1,14 +1,15 @@
-from generator import Generator, GeneratorMaster, FunctionGenerator, StatementGenerator, NumericKeypad
+from generator import GeneratorStateMaster
+from generator.widgets import GeneratorWidget
 
 
-class TopLevelGenerator(Generator):
+class TopLevelGeneratorWidget(GeneratorWidget):
     @property
     def caption(self):
         return self._caption
 
     def __init__(self):
         self._caption = 'Top level'
-        master = GeneratorMaster()
+        master = GeneratorStateMaster()
         
         self._options = {
             '0': {
@@ -16,16 +17,16 @@ class TopLevelGenerator(Generator):
                 'action': lambda: master.append_state(NumericKeypad())
             },
             '1': {
-                'caption': FunctionGenerator.caption,
-                'action': lambda: master.append_state(FunctionGenerator())
+                'caption': FunctionGeneratorWidget.caption,
+                'action': lambda: master.append_state(FunctionGeneratorWidget())
             },
             '2': {
                 'caption': StatementGenerator.caption,
                 'action': lambda: master.append_state(StatementGenerator())
             },
             '3': {
-                'caption': FunctionGenerator.caption,
-                'action': lambda: master.append_state(FunctionGenerator())
+                'caption': FunctionGeneratorWidget.caption,
+                'action': lambda: master.append_state(FunctionGeneratorWidget())
             },
         }
 

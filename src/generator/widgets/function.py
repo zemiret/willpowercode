@@ -1,7 +1,7 @@
-from generator import GeneratorMaster, Generator
+from generator import GeneratorStateMaster, GeneratorWidget
 
 
-class FunctionGenerator(Generator):
+class FunctionGeneratorWidget(GeneratorWidget):
     caption = 'Functions'
 
     def reset(self):
@@ -13,4 +13,4 @@ class FunctionGenerator(Generator):
         screen.refresh()
 
     def handle_input(self, u_in):
-        GeneratorMaster().reset_state()
+        GeneratorStateMaster().reset_state()
