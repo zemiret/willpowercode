@@ -2,7 +2,7 @@ from generator import GeneratorStateMaster
 from . import GeneratorWidget
 
 
-class StatementGeneratorWidget(GeneratorWidget):
+class StatementWidget(GeneratorWidget):
     caption = 'Statements'
 
     def display(self, screen):
@@ -12,6 +12,3 @@ class StatementGeneratorWidget(GeneratorWidget):
 
     def handle_input(self, u_in):
         GeneratorStateMaster().reset_state()
-
-    def reset(self):
-        pass

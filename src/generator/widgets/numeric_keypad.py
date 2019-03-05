@@ -1,11 +1,9 @@
-from typing import Dict
-
-from generator import GeneratorStateMaster, Commander
+from generator.base import make_pop_entry, make_execute_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
 from . import GeneratorWidget
 
 
-class NumericKeypadGeneratorWidget(GeneratorWidget):
+class NumericKeypadWidget(GeneratorWidget):
     caption = 'Numeric keypad'
 
     _input_options = {
@@ -27,8 +25,6 @@ class NumericKeypadGeneratorWidget(GeneratorWidget):
         self._cur_input = ''
         self._input_mode = False
 
-        master = GeneratorStateMaster()
-
         def _set_input_mode_action(input_mode):
             def set_input_mode():
                 self._input_mode = input_mode
@@ -44,18 +40,9 @@ class NumericKeypadGeneratorWidget(GeneratorWidget):
                 'caption': 'delete last',
                 'action': lambda: len(self.result) > 0 and self.result.pop()
             },
-            '2': {
-                'caption': 'accept',
-                'action': lambda: Commander().execute()
-            },
-            '3': {
-                'caption': 'back',
-                'action': lambda: master.pop_state()
-            }
+            '2': make_execute_entry(),
+            '3': make_pop_entry(),
         }
-
-    def reset(self):
-        pass
 
     def display(self, screen):
         if self._input_mode:
@@ -79,7 +66,7 @@ class NumericKeypadGeneratorWidget(GeneratorWidget):
 
         if self._input_mode:
             if len(self._cur_input) == 1:
-                self._execution_observer.notify(NumericKeypadGeneratorWidget._input_options[self._cur_input + u_in])
+                self._execution_observer.notify(NumericKeypadWidget._input_options[self._cur_input + u_in])
                 self._cur_input = ''
                 self._input_mode = False
             else:

@@ -1,8 +1,4 @@
-from abc import ABC, abstractmethod
-
-
-class ExecutionObserver(ABC):
-    @abstractmethod
+class ExecutionObserver:
     def notify(self, u_in: str):
         pass
 

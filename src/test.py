@@ -1,4 +1,4 @@
-from generator.base import Commander
+from generator import Commander
 from utils.common import abs_path
 
 

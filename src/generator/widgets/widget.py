@@ -1,24 +1,26 @@
 from abc import ABC, abstractmethod
 
 from generator.execution_observers.execution_observer import ExecutionObserver
+from generator.execution_observers.observers_factory import ObserversFactory
 
 
 class GeneratorWidget(ABC):
-    # TODO: Most generators will have the same "map to action" logic. Consider generalization
-    def __init__(self, execution_observer: ExecutionObserver):
+    def __init__(self, execution_observer: ExecutionObserver = ObserversFactory.make_stub()):
         self._execution_observer = execution_observer
+        self._options = {}
 
     @abstractmethod
     def display(self, screen):
-        pass
+        """
+        Default implementation for display method.
+        Displays without caption (listing options from 1st line).
+        To display caption call super from base class and then display caption.
+        """
+        screen.clear()
+        for i, (key, val) in enumerate(self._options.items()):
+            screen.addstr(i + 1, 0, key + ': ' + (val['caption']))
+        screen.refresh()
 
     @abstractmethod
     def handle_input(self, u_in):
-        pass
-
-    @abstractmethod
-    def reset(self):
-        """
-        Should restore the generator object to the state in which it can be added to the genrators tree
-        """
         pass

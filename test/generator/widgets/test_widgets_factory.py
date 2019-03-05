@@ -1,11 +1,11 @@
 import unittest
 
 from generator import GeneratorStateMaster, WidgetsFactory
-from generator.widgets.function import FunctionGeneratorWidget
-from generator.widgets.navigation import NavigationGeneratorWidget
-from generator.widgets.numeric_keypad import NumericKeypadGeneratorWidget
-from generator.widgets.statement import StatementGeneratorWidget
-from generator.widgets.top_level import TopLevelGeneratorWidget
+from generator.widgets.function import FunctionWidget
+from generator.widgets.navigation import NavigationWidget
+from generator.widgets.numeric_keypad import NumericKeypadWidget
+from generator.widgets.statement import StatementWidget
+from generator.widgets.top_level import TopLevelWidget
 
 
 class TestWidgetsFactory(unittest.TestCase):
@@ -14,11 +14,11 @@ class TestWidgetsFactory(unittest.TestCase):
         GeneratorStateMaster('dumb screen')  # Required setup so that it does not fail resolving
 
     def test_widgets_creation(self):
-        self.assertIsInstance(WidgetsFactory.make_top_level(), TopLevelGeneratorWidget)
-        self.assertIsInstance(WidgetsFactory.make_navigation(), NavigationGeneratorWidget)
-        self.assertIsInstance(WidgetsFactory.make_numeric_keypad(), NumericKeypadGeneratorWidget)
-        self.assertIsInstance(WidgetsFactory.make_statement(), StatementGeneratorWidget)
-        self.assertIsInstance(WidgetsFactory.make_function(), FunctionGeneratorWidget)
+        self.assertIsInstance(WidgetsFactory.make_top_level(), TopLevelWidget)
+        self.assertIsInstance(WidgetsFactory.make_navigation(), NavigationWidget)
+        self.assertIsInstance(WidgetsFactory.make_numeric_keypad(), NumericKeypadWidget)
+        self.assertIsInstance(WidgetsFactory.make_statement(), StatementWidget)
+        self.assertIsInstance(WidgetsFactory.make_function(), FunctionWidget)
 
 
 if __name__ == '__main__':

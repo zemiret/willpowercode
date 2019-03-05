@@ -2,11 +2,8 @@ from generator import GeneratorStateMaster
 from . import GeneratorWidget
 
 
-class NavigationGeneratorWidget(GeneratorWidget):
+class NavigationWidget(GeneratorWidget):
     caption = 'Navigation'
-
-    def reset(self):
-        pass
 
     def display(self, screen):
         screen.clear()

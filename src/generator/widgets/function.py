@@ -2,11 +2,8 @@ from generator import GeneratorStateMaster
 from . import GeneratorWidget
 
 
-class FunctionGeneratorWidget(GeneratorWidget):
+class FunctionWidget(GeneratorWidget):
     caption = 'Functions'
-
-    def reset(self):
-        pass
 
     def display(self, screen):
         screen.clear()

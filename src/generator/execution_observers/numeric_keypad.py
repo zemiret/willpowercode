@@ -7,10 +7,12 @@ from .execution_observer import ExecutionObserver
 class NumericKeypadExecutionObserver(ExecutionObserver):
     def __init__(self):
         def create_action(index):
-            return lambda: \
+            def _execute_action():
                 Commander().append_command(
                     abs_path(__file__, '..', 'scripts', 'numeric_keypad', 'script' + str(index))
                 )
+
+            return _execute_action
 
         self._options = [create_action(i) for i in range(0, 10)]
 
