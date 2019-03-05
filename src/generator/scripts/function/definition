@@ -1,0 +1,1 @@
+:execute "normal! idef willpower_great_again():\n    print('Dark power!')\n\<esc>"

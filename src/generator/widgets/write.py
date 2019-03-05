@@ -1,4 +1,4 @@
-from generator import WidgetsFactory
+from generator import WidgetsFactory, GeneratorError
 from generator.base import make_generator_entry, make_pop_entry
 from generator.execution_observers import ExecutionObserver
 from generator.widgets import GeneratorWidget
@@ -26,4 +26,7 @@ class WriteWidget(GeneratorWidget):
         screen.refresh()
 
     def handle_input(self, u_in):
-        self._options['3']['action']()
+        try:
+            self._options[u_in]['action']()
+        except KeyError:
+            raise GeneratorError('Not handled action in WriteWidget/')
