@@ -67,7 +67,6 @@ def setup_detector(cap):
 
 def setup_generator(screen):
     output_file = os.path.join(os.path.realpath(os.environ['HOME']), 'tmp', 'willpower.out')
-    
     Commander(output_file)
 
     gen = GeneratorStateMaster(screen)
