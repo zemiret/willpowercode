@@ -169,3 +169,5 @@ fabric.properties
 .idea
 .idea/*
 
+test/out
+test/out/*
