@@ -1,5 +1,8 @@
-# from generator import GeneratorStateMaster
+from generator import WidgetsFactory, GeneratorStateMaster
 from generator.execution_observers.execution_observer import ExecutionObserver
+from generator.widgets.function import FunctionGeneratorWidget
+from generator.widgets.numeric_keypad import NumericKeypadGeneratorWidget
+from generator.widgets.statement import StatementGeneratorWidget
 from . import GeneratorWidget
 
 
@@ -11,25 +14,25 @@ class TopLevelGeneratorWidget(GeneratorWidget):
     def __init__(self, execution_observer: ExecutionObserver):
         super().__init__(execution_observer)
         self._caption = 'Top level'
-        # master = GeneratorStateMaster()
+        master = GeneratorStateMaster()
         
         self._options = {
-            # '0': {
-            #     'caption': NumericKeypad.caption,
-            #     'action': lambda: master.append_state(NumericKeypad())
-            # },
-            # '1': {
-            #     'caption': FunctionGeneratorWidget.caption,
-            #     'action': lambda: master.append_state(FunctionGeneratorWidget())
-            # },
-            # '2': {
-            #     'caption': StatementGenerator.caption,
-            #     'action': lambda: master.append_state(StatementGenerator())
-            # },
-            # '3': {
-            #     'caption': FunctionGeneratorWidget.caption,
-            #     'action': lambda: master.append_state(FunctionGeneratorWidget())
-            # },
+            '0': {
+                'caption': NumericKeypadGeneratorWidget.caption,
+                'action': lambda: master.append_state(WidgetsFactory.make_numeric_keypad())
+            },
+            '1': {
+                'caption': FunctionGeneratorWidget.caption,
+                'action': lambda: master.append_state(WidgetsFactory.make_function())
+            },
+            '2': {
+                'caption': StatementGeneratorWidget.caption,
+                'action': lambda: master.append_state(WidgetsFactory.make_statement())
+            },
+            '3': {
+                'caption': FunctionGeneratorWidget.caption,
+                'action': lambda: master.append_state(WidgetsFactory.make_function())
+            },
         }
 
     def display(self, screen):

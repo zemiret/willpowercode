@@ -1,6 +1,6 @@
 import unittest
 
-from generator import WidgetsFactory, GeneratorStateMaster
+from generator import GeneratorStateMaster, WidgetsFactory
 from generator.widgets.function import FunctionGeneratorWidget
 from generator.widgets.navigation import NavigationGeneratorWidget
 from generator.widgets.numeric_keypad import NumericKeypadGeneratorWidget

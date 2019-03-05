@@ -1,3 +1,5 @@
+from typing import Dict
+
 from generator import GeneratorStateMaster, Commander
 from generator.execution_observers.execution_observer import ExecutionObserver
 from . import GeneratorWidget
@@ -55,25 +57,21 @@ class NumericKeypadGeneratorWidget(GeneratorWidget):
     def reset(self):
         pass
 
-    def _display_input_mode(self, screen):
-        screen.clear()
-        screen.addstr(0, 0, self.caption + ' - input')
-        for i, (key, val) in enumerate(self._input_options.items()):
-            screen.addstr(i + 1, 0, key + ': ' + val['caption'])
-        screen.refresh()
-
-    def _display_options(self, screen):
-        screen.clear()
-        screen.addstr(0, 0, self.caption)
-        for i, (key, val) in enumerate(self._options.items()):
-            screen.addstr(i + 1, 0, key + ': ' + val['caption'])
-        screen.refresh()
-
     def display(self, screen):
         if self._input_mode:
-            self._display_input_mode(screen)
+            self._display_options(screen, self.caption + ' - input', self._input_options)
         else:
-            self._display_options(screen)
+            self._display_options(screen, self.caption, self._options)
+
+    def _display_options(self, screen, caption: str, options):
+        screen.clear()
+        screen.addstr(0, 0, caption)
+        for i, (key, val) in enumerate(options.items()):
+            self._display_row(screen, i + 1, key, val)
+        screen.refresh()
+
+    def _display_row(self, screen, index, key, value):
+        screen.addstr(index, 0, key + ': ' + (value if type(value) is str else value['caption']))
 
     def handle_input(self, u_in):
         if not 0 <= int(u_in) <= 3:

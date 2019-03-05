@@ -47,7 +47,7 @@ class Commander(object):
             if output_file is None:
                 raise TypeError('GeneratorStateMaster initialization requires output_file!')
 
-        Commander.__instance = Commander.__SingletonStub(output_file)
+            Commander.__instance = Commander.__SingletonStub(output_file)
 
     def __getattr__(self, item):
         return getattr(self.__instance, item)

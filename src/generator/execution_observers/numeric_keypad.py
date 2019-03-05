@@ -6,10 +6,13 @@ from .execution_observer import ExecutionObserver
 
 class NumericKeypadExecutionObserver(ExecutionObserver):
     def __init__(self):
-        self._options = [lambda:
-                         Commander().append_command(abs_path(__file__, '..', 'scripts', 'numeric_keypad' + str(i)))
-                         for i in range(0, 10)
-                         ]
+        def create_action(index):
+            return lambda: \
+                Commander().append_command(
+                    abs_path(__file__, '..', 'scripts', 'numeric_keypad', 'script' + str(index))
+                )
+
+        self._options = [create_action(i) for i in range(0, 10)]
 
     def notify(self, u_in: str):
         index = int(u_in)
