@@ -1,6 +1,7 @@
 from generator import WidgetsFactory
 from generator.base import make_generator_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
+from generator.execution_observers.observers_factory import ObserversFactory
 from generator.widgets.function import FunctionWidget
 from generator.widgets.numeric_keypad import NumericKeypadWidget
 from generator.widgets.statement import StatementWidget
@@ -13,7 +14,7 @@ class TopLevelWidget(GeneratorWidget):
     def caption(self):
         return self._caption
 
-    def __init__(self, execution_observer: ExecutionObserver):
+    def __init__(self, execution_observer: ExecutionObserver = ObserversFactory.make_stub()):
         super().__init__(execution_observer)
         self._caption = 'Top level'
 

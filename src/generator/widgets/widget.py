@@ -1,11 +1,10 @@
 from abc import ABC, abstractmethod
 
 from generator.execution_observers.execution_observer import ExecutionObserver
-from generator.execution_observers.observers_factory import ObserversFactory
 
 
 class GeneratorWidget(ABC):
-    def __init__(self, execution_observer: ExecutionObserver = ObserversFactory.make_stub()):
+    def __init__(self, execution_observer: ExecutionObserver):
         self._execution_observer = execution_observer
         self._options = {}
 

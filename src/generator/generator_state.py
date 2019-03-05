@@ -11,7 +11,7 @@ class GeneratorStateMaster(object):
             self._start_state = start_state
 
         def reset_state(self):
-            self._start_state.reset()
+            self._start_state = self._start_state.__class__()  # Recreate start state
             self._state_chain = []
             self.append_state(self._start_state)
 

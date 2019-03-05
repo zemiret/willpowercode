@@ -3,6 +3,7 @@ from generator.widgets import GeneratorWidget
 
 
 class WidgetsFactory(object):
+
     @staticmethod
     def make_navigation(observer=ObserversFactory.make_stub()) -> GeneratorWidget:
         from generator.widgets.navigation import NavigationWidget
