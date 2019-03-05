@@ -5,7 +5,7 @@ from queue import Queue, Empty
 import cv2 as cv
 
 from detector import Detector
-from generator import GeneratorStateMaster, Commander, WidgetsFactory
+from generator import GeneratorStateMaster, Commander, WidgetsFactory, GeneratorError
 
 
 def main(stdscr):
@@ -15,7 +15,7 @@ def main(stdscr):
     detector.start()
 
     gen = setup_generator(stdscr)
-    gen.display(stdscr)
+    gen.display()
 
     while True:
         res = read_frame(cap, d_ui_in, d_ui_out)
@@ -24,8 +24,10 @@ def main(stdscr):
             res_out = get_detector_output(d_input_out)
 
             print(res_out)
-            # gen.handle_input(res_out)
-            # gen.display(stdscr)
+            gen.handle_input(res_out)
+            gen.display()
+        except GeneratorError:
+            print('Shit happened')
         except (Empty, ValueError):
             pass
 
@@ -138,5 +140,5 @@ def keyboard_main(stdscr):
 
 if __name__ == "__main__":
     # TODO: Test with real detector
-    # wrapper(main)
-    wrapper(keyboard_main)
+    wrapper(main)
+    # wrapper(keyboard_main)
