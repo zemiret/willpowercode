@@ -23,6 +23,7 @@ class WriteWidget(GeneratorWidget):
     def display(self, screen):
         super().display(screen)
         screen.addstr(0, 0, WriteWidget.caption)
+        screen.refresh()
 
     def handle_input(self, u_in):
         self._options['3']['action']()

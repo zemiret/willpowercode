@@ -1,11 +1,11 @@
 class GeneratorStateMaster(object):
     class __SingletonStub(object):
-        def __init__(self, screen):
+        def __init__(self):
             self._start_state = None
             self._current_state = None
             self._state_chain = []
 
-            self._screen = screen
+            self._screen = None
 
         def set_start_state(self, start_state):
             self._start_state = start_state
@@ -34,12 +34,12 @@ class GeneratorStateMaster(object):
 
     __instance = None
 
-    def __init__(self, screen=None):
+    def __init__(self):
         if GeneratorStateMaster.__instance is None:
-            if screen is None:
-                raise TypeError('GeneratorStaterMaster initialization requires screen!')
+            GeneratorStateMaster.__instance = GeneratorStateMaster.__SingletonStub()
 
-            GeneratorStateMaster.__instance = GeneratorStateMaster.__SingletonStub(screen)
+    def init(self, screen):
+        GeneratorStateMaster.__instance._screen = screen
 
     def __getattr__(self, item):
         return getattr(self.__instance, item)

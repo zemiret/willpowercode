@@ -1,4 +1,4 @@
-from generator import Commander, GeneratorException
+from generator import Commander, GeneratorError
 from utils.common import abs_path
 
 from .execution_observer import ExecutionObserver
@@ -19,9 +19,9 @@ class NumericKeypadExecutionObserver(ExecutionObserver):
     def notify(self, u_in: str):
         index = int(u_in)
         if index < 0:
-            raise GeneratorException('Negative indexes are not allowed.')
+            raise GeneratorError('Negative indexes are not allowed.')
 
         try:
             self._options[index]()
         except IndexError:
-            raise GeneratorException()
+            raise GeneratorError('Not supported operation in NumericKeypadExecutionObserver.')

@@ -1,18 +1,15 @@
 import unittest
 
-from generator import GeneratorStateMaster, WidgetsFactory
+from generator import WidgetsFactory
 from generator.widgets.function import FunctionWidget
 from generator.widgets.navigation import NavigationWidget
 from generator.widgets.numeric_keypad import NumericKeypadWidget
 from generator.widgets.statement import StatementWidget
 from generator.widgets.top_level import TopLevelWidget
+from test.common import TestCase
 
 
-class TestWidgetsFactory(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        GeneratorStateMaster('dumb screen')  # Required setup so that it does not fail resolving
-
+class TestWidgetsFactory(TestCase):
     def test_widgets_creation(self):
         self.assertIsInstance(WidgetsFactory.make_top_level(), TopLevelWidget)
         self.assertIsInstance(WidgetsFactory.make_navigation(), NavigationWidget)

@@ -25,7 +25,7 @@ class WidgetsFactory(object):
         return TopLevelWidget(observer)
 
     @staticmethod
-    def make_function(observer=ObserversFactory.make_stub()) -> GeneratorWidget:
+    def make_function(observer=ObserversFactory.make_function()) -> GeneratorWidget:
         from generator.widgets.function import FunctionWidget
         return FunctionWidget(observer)
 

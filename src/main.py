@@ -8,15 +8,13 @@ from detector import Detector
 from generator import GeneratorStateMaster, Commander, WidgetsFactory
 
 
-# TODO: Change generator file organization. They will boom!
-
 def main(stdscr):
     cap = cv.VideoCapture(0)
 
     detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
     detector.start()
 
-    gen = setup_generator()
+    gen = setup_generator(stdscr)
     gen.display(stdscr)
 
     while True:
@@ -67,11 +65,14 @@ def setup_detector(cap):
 
 def setup_generator(screen):
     output_file = os.path.join(os.path.realpath(os.environ['HOME']), 'tmp', 'willpower.out')
-    Commander(output_file)
+    commander = Commander()
+    commander.init(output_file)
 
-    gen = GeneratorStateMaster(screen)
+    gen = GeneratorStateMaster()
+    gen.init(screen)
     gen.set_start_state(WidgetsFactory.make_top_level())
     gen.reset_state()
+
     return gen
 
 

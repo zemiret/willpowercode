@@ -1,2 +1,2 @@
-class GeneratorException(Exception):
+class GeneratorError(Exception):
     pass

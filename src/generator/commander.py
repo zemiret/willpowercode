@@ -6,9 +6,9 @@ from utils.common import abs_path
 
 class Commander(object):
     class __SingletonStub(object):
-        def __init__(self, output_file):
+        def __init__(self):
             self._command_chain = []
-            self._output_file = output_file
+            self._output_file = ''
             self._save_and_quit_command = abs_path(__file__, 'scripts', 'common', 'save_and_quit')
 
             # TODO: Think of a better way to create temporary files (however the standard python temp cannot be used)
@@ -43,12 +43,16 @@ class Commander(object):
 
     __instance = None
 
-    def __init__(self, output_file=None):
+    def __init__(self):
         if Commander.__instance is None:
-            if output_file is None:
-                raise TypeError('GeneratorStateMaster initialization requires output_file!')
+            Commander.__instance = Commander.__SingletonStub()
 
-            Commander.__instance = Commander.__SingletonStub(output_file)
+    def init(self, output_file):
+        """
+        Remember to call this method after first init!
+        :param output_file: path to output file
+        """
+        Commander.__instance._output_file = output_file
 
     def __getattr__(self, item):
         return getattr(self.__instance, item)

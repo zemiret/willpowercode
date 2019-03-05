@@ -17,8 +17,7 @@ class GeneratorWidget(ABC):
         """
         screen.clear()
         for i, (key, val) in enumerate(self._options.items()):
-            screen.addstr(i + 1, 0, key + ': ' + (val['caption']))
-        screen.refresh()
+            screen.addstr(i + 1, 0, key + ': ' + (val if type(val) is str else val['caption']))
 
     @abstractmethod
     def handle_input(self, u_in):
