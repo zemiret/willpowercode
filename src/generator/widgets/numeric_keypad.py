@@ -45,7 +45,7 @@ class NumericKeypadWidget(GeneratorWidget):
             '3': make_pop_entry(),
         }
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         if self._input_mode:
             self._display_options(screen, self.caption + ' - input', self._input_options)
         else:

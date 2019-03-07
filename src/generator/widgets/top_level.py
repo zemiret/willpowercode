@@ -25,7 +25,7 @@ class TopLevelWidget(GeneratorWidget):
             '3': make_generator_entry(CommonWidget.caption, WidgetsFactory.make_common())
         }
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         screen.clear()
         for i, (key, val) in enumerate(self._options.items()):
             screen.addstr(i, 0, key + ': ' + self._options[key]['caption'])

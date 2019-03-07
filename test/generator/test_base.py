@@ -6,7 +6,7 @@ from test.common import TestCase
 
 class TestConvenienceFunctions(TestCase):
     class DummyWidget(GeneratorWidget):
-        def display(self, screen):
+        def display(self, screen, *args, **kwargs):
             pass
 
         def handle_input(self, u_in):

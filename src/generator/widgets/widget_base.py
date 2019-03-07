@@ -3,13 +3,19 @@ from abc import ABC, abstractmethod
 from generator.execution_observers.execution_observer import ExecutionObserver
 
 
-class GeneratorWidget(ABC):
+class Widget(ABC):
+    @abstractmethod
+    def display(self, screen, *args, **kwargs):
+        pass
+
+
+class GeneratorWidget(Widget):
     def __init__(self, execution_observer: ExecutionObserver):
         self._execution_observer = execution_observer
         self._options = {}
 
     @abstractmethod
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         """
         Default implementation for display method.
         Displays without caption (listing options from 1st line).

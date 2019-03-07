@@ -5,7 +5,7 @@ from . import GeneratorWidget
 class NavigationWidget(GeneratorWidget):
     caption = 'Navigation'
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         screen.clear()
         screen.addstr("You're in navigation generator")
         screen.refresh()

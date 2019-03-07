@@ -20,7 +20,7 @@ class WriteWidget(GeneratorWidget):
             '3': make_pop_entry(),
         }
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         super().display(screen)
         screen.addstr(0, 0, WriteWidget.caption)
         screen.refresh()

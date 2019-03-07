@@ -14,7 +14,7 @@ class FunctionWidget(GeneratorWidget):
             '2': COMMON_CAPTIONS['back'],
         }
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         print("Displaying function generator")
         super().display(screen)
         screen.addstr(0, 0, FunctionWidget.caption)

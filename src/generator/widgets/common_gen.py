@@ -5,7 +5,7 @@ from generator.widgets import GeneratorWidget
 class CommonWidget(GeneratorWidget):
     caption = 'Common'
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         screen.clear()
         screen.addstr("You're in common generator")
         screen.refresh()

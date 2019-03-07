@@ -5,7 +5,7 @@ from . import GeneratorWidget
 class StatementWidget(GeneratorWidget):
     caption = 'Statements'
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         screen.clear()
         screen.addstr("You're in statement generator")
         screen.refresh()

@@ -5,7 +5,7 @@ from generator.widgets import GeneratorWidget
 class RefactorWidget(GeneratorWidget):
     caption = 'Refactor'
 
-    def display(self, screen):
+    def display(self, screen, *args, **kwargs):
         screen.clear()
         screen.addstr("You're in refactor generator")
         screen.refresh()
