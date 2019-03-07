@@ -36,5 +36,15 @@ class WidgetsFactory(object):
 
     @staticmethod
     def make_class(observer=ObserversFactory.make_stub()) -> GeneratorWidget:
-        from generator.widgets.classGen import ClassWidget
+        from generator.widgets.class_gen import ClassWidget
         return ClassWidget(observer)
+
+    @staticmethod
+    def make_refactor(observer=ObserversFactory.make_stub()) -> GeneratorWidget:
+        from generator.widgets.refactor import RefactorWidget
+        return RefactorWidget(observer)
+
+    @staticmethod
+    def make_common(observer=ObserversFactory.make_stub()) -> GeneratorWidget:
+        from generator.widgets.common_gen import CommonWidget
+        return CommonWidget(observer)

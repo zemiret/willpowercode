@@ -2,7 +2,7 @@ from generator import WidgetsFactory, GeneratorError
 from generator.base import make_generator_entry, make_pop_entry
 from generator.execution_observers import ExecutionObserver
 from generator.widgets import GeneratorWidget
-from generator.widgets.classGen import ClassWidget
+from generator.widgets.class_gen import ClassWidget
 from generator.widgets.function import FunctionWidget
 from generator.widgets.statement import StatementWidget
 

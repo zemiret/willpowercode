@@ -2,9 +2,9 @@ from generator import WidgetsFactory
 from generator.base import make_generator_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
 from generator.execution_observers.observers_factory import ObserversFactory
-from generator.widgets.function import FunctionWidget
-from generator.widgets.numeric_keypad import NumericKeypadWidget
-from generator.widgets.statement import StatementWidget
+from generator.widgets.common_gen import CommonWidget
+from generator.widgets.navigation import NavigationWidget
+from generator.widgets.refactor import RefactorWidget
 from generator.widgets.write import WriteWidget
 from . import GeneratorWidget
 
@@ -20,9 +20,9 @@ class TopLevelWidget(GeneratorWidget):
 
         self._options = {
             '0': make_generator_entry(WriteWidget.caption, WidgetsFactory.make_write()),
-            '1': make_generator_entry(NumericKeypadWidget.caption, WidgetsFactory.make_numeric_keypad()),
-            '2': make_generator_entry(StatementWidget.caption, WidgetsFactory.make_statement()),
-            '3': make_generator_entry(FunctionWidget.caption, WidgetsFactory.make_function())
+            '1': make_generator_entry(NavigationWidget.caption, WidgetsFactory.make_navigation()),
+            '2': make_generator_entry(RefactorWidget.caption, WidgetsFactory.make_refactor()),
+            '3': make_generator_entry(CommonWidget.caption, WidgetsFactory.make_common())
         }
 
     def display(self, screen):
