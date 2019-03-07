@@ -1,4 +1,4 @@
-from generator import WidgetsFactory
+from generator.widgets import WidgetsFactory
 from generator.base import make_generator_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
 from generator.execution_observers.observers_factory import ObserversFactory

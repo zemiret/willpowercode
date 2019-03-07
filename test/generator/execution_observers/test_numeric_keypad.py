@@ -1,4 +1,4 @@
-from generator import GeneratorError
+from generator.exceptions import GeneratorError
 from generator.execution_observers.numeric_keypad import NumericKeypadExecutionObserver
 from test.common import TestCase
 

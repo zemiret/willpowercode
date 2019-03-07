@@ -1,4 +1,6 @@
-from generator.execution_observers import FunctionExecutionObserver, NumericKeypadExecutionObserver, PrintObserver
+from generator.execution_observers import PrintObserver
+from generator.execution_observers.function import FunctionExecutionObserver
+from generator.execution_observers.numeric_keypad import NumericKeypadExecutionObserver
 
 
 class ObserversFactory(object):

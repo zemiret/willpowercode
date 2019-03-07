@@ -1,3 +1,6 @@
+from generator.buffers import GeneratorBuffers
+
+
 class GeneratorStateMaster(object):
     class __SingletonStub(object):
         def __init__(self):
@@ -6,6 +9,7 @@ class GeneratorStateMaster(object):
             self._state_chain = []
 
             self._screen = None
+            self._buffers = None
 
         def set_start_state(self, start_state):
             self._start_state = start_state
@@ -16,6 +20,7 @@ class GeneratorStateMaster(object):
             self.append_state(self._start_state)
 
         def display(self):
+            self._buffers.display(self._screen)
             self._current_state.display(self._screen)
 
         def handle_input(self, u_in):
@@ -38,8 +43,9 @@ class GeneratorStateMaster(object):
         if GeneratorStateMaster.__instance is None:
             GeneratorStateMaster.__instance = GeneratorStateMaster.__SingletonStub()
 
-    def init(self, screen):
+    def init(self, screen, buffers: GeneratorBuffers):
         GeneratorStateMaster.__instance._screen = screen
+        GeneratorStateMaster.__instance._buffers = buffers
 
     def __getattr__(self, item):
         return getattr(self.__instance, item)

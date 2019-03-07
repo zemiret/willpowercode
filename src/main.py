@@ -5,7 +5,10 @@ from queue import Queue, Empty
 import cv2 as cv
 
 from detector import Detector
-from generator import GeneratorStateMaster, Commander, WidgetsFactory, GeneratorError
+from generator import GeneratorStateMaster, Commander
+from generator.buffers import GeneratorBuffers
+from generator.exceptions import GeneratorError
+from generator.widgets import WidgetsFactory
 
 
 def main(stdscr):
@@ -70,8 +73,10 @@ def setup_generator(screen):
     commander = Commander()
     commander.init(output_file)
 
+    buffers = GeneratorBuffers()
+
     gen = GeneratorStateMaster()
-    gen.init(screen)
+    gen.init(screen, buffers)
     gen.set_start_state(WidgetsFactory.make_top_level())
     gen.reset_state()
 

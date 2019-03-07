@@ -1,5 +1,5 @@
 from generator.buffers.buffer import Buffer
-from generator.widgets import Widget
+from generator.widget_base import Widget
 
 
 class InputBuffer(Buffer):
@@ -21,5 +21,8 @@ class InputBuffer(Buffer):
 
 
 class InputBufferWidget(Widget):
+    def __init__(self, input_buffer):
+        self._buffer = input_buffer
+
     def display(self, screen, *args, **kwargs):
         pass

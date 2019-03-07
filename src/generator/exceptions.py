@@ -2,5 +2,5 @@ class GeneratorError(Exception):
     pass
 
 
-class GeneratorBufferException(Exception):
+class GeneratorBufferError(Exception):
     pass

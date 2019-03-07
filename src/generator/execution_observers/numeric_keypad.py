@@ -1,4 +1,5 @@
-from generator import Commander, GeneratorError
+from generator import Commander
+from generator.exceptions import GeneratorError
 from utils.common import abs_path
 
 from .execution_observer import ExecutionObserver

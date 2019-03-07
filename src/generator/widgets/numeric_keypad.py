@@ -1,4 +1,4 @@
-from generator import GeneratorError
+from generator.exceptions import GeneratorError
 from generator.base import make_pop_entry, make_execute_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
 from . import GeneratorWidget

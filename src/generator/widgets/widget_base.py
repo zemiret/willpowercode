@@ -1,12 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
 from generator.execution_observers.execution_observer import ExecutionObserver
-
-
-class Widget(ABC):
-    @abstractmethod
-    def display(self, screen, *args, **kwargs):
-        pass
+from generator.widget_base import Widget
 
 
 class GeneratorWidget(Widget):

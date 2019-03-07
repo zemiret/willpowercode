@@ -1,4 +1,5 @@
-from generator import Commander, GeneratorStateMaster, GeneratorError
+from generator import Commander, GeneratorStateMaster
+from generator.exceptions import GeneratorError
 from generator.execution_observers import ExecutionObserver
 from utils.common import abs_path
 

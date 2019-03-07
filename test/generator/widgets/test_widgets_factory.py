@@ -1,6 +1,6 @@
 import unittest
 
-from generator import WidgetsFactory
+from generator.widgets import WidgetsFactory
 from generator.widgets.common_gen import CommonWidget
 from generator.widgets.function import FunctionWidget
 from generator.widgets.navigation import NavigationWidget

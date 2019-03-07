@@ -1,5 +1,5 @@
-from generator import GeneratorError
-from generator.execution_observers import FunctionExecutionObserver
+from generator.exceptions import GeneratorError
+from generator.execution_observers.function import FunctionExecutionObserver
 from test.common import TestCase
 
 

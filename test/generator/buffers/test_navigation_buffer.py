@@ -1,5 +1,5 @@
 from generator.buffers.navigation_buffer import NavigationBuffer
-from generator.exceptions import GeneratorBufferException
+from generator.exceptions import GeneratorBufferError
 from test.common import TestCase
 
 
@@ -21,6 +21,6 @@ class TestNavigationBuffer(TestCase):
         self.assertEqual(self.nav_buffer.peek(), (0, 0))
 
     def test_setting_incorrect_values(self):
-        self.assertRaises(GeneratorBufferException, lambda: self.nav_buffer.put((-1, 12)))
-        self.assertRaises(GeneratorBufferException, lambda: self.nav_buffer.put((0, -12)))
-        self.assertRaises(GeneratorBufferException, lambda: self.nav_buffer.put((-100, -100)))
+        self.assertRaises(GeneratorBufferError, lambda: self.nav_buffer.put((-1, 12)))
+        self.assertRaises(GeneratorBufferError, lambda: self.nav_buffer.put((0, -12)))
+        self.assertRaises(GeneratorBufferError, lambda: self.nav_buffer.put((-100, -100)))

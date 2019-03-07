@@ -1,3 +1,1 @@
 from .execution_observer import ExecutionObserver, PrintObserver
-from .numeric_keypad import NumericKeypadExecutionObserver
-from .function import FunctionExecutionObserver

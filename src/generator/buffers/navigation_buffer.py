@@ -1,8 +1,8 @@
 from typing import Tuple
 
+from generator.exceptions import GeneratorBufferError
 from generator.buffers.buffer import Buffer
-from generator.exceptions import GeneratorBufferException
-from generator.widgets import Widget
+from generator.widget_base import Widget
 
 
 class NavigationBuffer(Buffer):
@@ -20,7 +20,7 @@ class NavigationBuffer(Buffer):
         if nav_state[0] >= 0 and nav_state[1] >= 0:
             self._navigation_state = nav_state
         else:
-            raise GeneratorBufferException('Cannot set navigation to negative lines in NavigationBuffer.')
+            raise GeneratorBufferError('Cannot set navigation to negative lines in NavigationBuffer.')
 
     def peek(self):
         return self._navigation_state
@@ -30,6 +30,9 @@ class NavigationBuffer(Buffer):
 
 
 class NavigationBufferWidget(Widget):
+    def __init__(self, nav_buffer):
+        self._buffer = nav_buffer
+
     def display(self, screen, *args, **kwargs):
         """
         :param args: should be a tuple with (y, x) position on the screen
