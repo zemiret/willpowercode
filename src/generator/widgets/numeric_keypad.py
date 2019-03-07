@@ -1,3 +1,4 @@
+from generator import GeneratorError
 from generator.base import make_pop_entry, make_execute_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
 from . import GeneratorWidget
@@ -64,6 +65,12 @@ class NumericKeypadWidget(GeneratorWidget):
         if not 0 <= int(u_in) <= 3:
             return
 
+        try:
+            self._handle_current_state_input(u_in)
+        except KeyError:
+            raise GeneratorError('Unsupported operation in NumericKeypadWidget.')
+
+    def _handle_current_state_input(self, u_in):
         if self._input_mode:
             if len(self._cur_input) == 1:
                 self._execution_observer.notify(NumericKeypadWidget._input_options[self._cur_input + u_in])

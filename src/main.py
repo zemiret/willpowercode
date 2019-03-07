@@ -26,8 +26,8 @@ def main(stdscr):
             print(res_out)
             gen.handle_input(res_out)
             gen.display()
-        except GeneratorError:
-            print('Shit happened')
+        except GeneratorError as e:
+            print('Shit happened: {}'.format(e))
         except (Empty, ValueError):
             pass
 
@@ -93,7 +93,7 @@ def read_frame(cap, d_ui_in, d_ui_out):
 def get_detector_output(d_input_out):
     res_out = d_input_out.get_nowait()
     res_out = int(res_out) - 2  # This shall normalize the output to be 0, 1, 2, 3
-    return res_out
+    return str(res_out)
 
 
 # --- TESTING BELOW ---

@@ -15,6 +15,7 @@ class FunctionWidget(GeneratorWidget):
         }
 
     def display(self, screen):
+        print("Displaying function generator")
         super().display(screen)
         screen.addstr(0, 0, FunctionWidget.caption)
         screen.refresh()

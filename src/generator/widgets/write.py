@@ -27,6 +27,7 @@ class WriteWidget(GeneratorWidget):
 
     def handle_input(self, u_in):
         try:
+            print("Write action: {}".format(u_in))
             self._options[u_in]['action']()
         except KeyError:
-            raise GeneratorError('Not handled action in WriteWidget/')
+            raise GeneratorError('Not handled action in WriteWidget')

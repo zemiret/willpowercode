@@ -23,6 +23,6 @@ class FunctionExecutionObserver(ExecutionObserver):
 
     def notify(self, u_in: str):
         try:
-            self._options[u_in]()
+            self._options[str(u_in)]()
         except KeyError:
             raise GeneratorError('Not supported operation in FunctionExecutionObserver.')
