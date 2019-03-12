@@ -12,6 +12,7 @@ class Commander(object):
             self._save_and_quit_command = abs_path(__file__, 'scripts', 'common', 'save_and_quit')
 
             self._commands_filepath = tmp_file_path()
+            self._history_filepath = abs_path(__file__, '..', '..', 'out', 'history')
 
         def append_command(self, command_path):
             self._command_chain.append(command_path)
@@ -21,21 +22,27 @@ class Commander(object):
                 self._command_chain.pop()
 
         def execute(self):
-            with open(self._commands_filepath, 'w+') as command_file:
+            with open(self._commands_filepath, 'w+') as command_file, \
+                 open(self._history_filepath, 'a+') as history_file:
+
                 for command in self._command_chain:
-                    with open(command, 'r') as command_content:
-                        command_file.write(command_content.read())
+                    self._write_command(command_file, history_file, command)
 
-                with open(self._save_and_quit_command, 'r') as quit_cmd:
-                    command_file.write(quit_cmd.read())
-
-                print(command_file.name)
+                self._write_command(command_file, history_file, self._save_and_quit_command)
 
                 command_file.close()
+                history_file.close()
 
                 subprocess.run(['vim', '-s', os.path.realpath(command_file.name), self._output_file], shell=False)
 
                 self.clear_commands()
+
+        def _write_command(self, output_file, history_file, command_file):
+            with open(command_file, 'r') as command_content_file:
+                command_content = command_content_file.read()
+
+                output_file.write(command_content)
+                history_file.write(command_content)
 
         def clear_commands(self):
             self._command_chain = []
