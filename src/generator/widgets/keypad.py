@@ -1,4 +1,5 @@
 from generator import GeneratorStateMaster
+from generator.exceptions import GeneratorError
 from generator.widgets import GeneratorWidget
 
 
@@ -7,6 +8,9 @@ class KeypadWidget(GeneratorWidget):
 
     def __init__(self, observer):
         super().__init__(observer)
+
+        self.current_option_code = ''
+        self._internal_buffer = ''
 
         self._options = {
             '00': {
@@ -53,6 +57,8 @@ class KeypadWidget(GeneratorWidget):
             },
             '300': 'Accept',
             '301': 'Delete last',
+            '302': 'Delete all',
+            '310': 'Back',
         }
 
     def display(self, screen, *args, **kwargs):
@@ -72,8 +78,11 @@ class KeypadWidget(GeneratorWidget):
         self._display_group(screen, (ys[2], xs[1]), '21', self._options['21'])
         self._display_group(screen, (ys[2], xs[2]), '22', self._options['22'])
 
-        screen.addstr(ys[2] + 6, xs[0] - 6, '300: ' + self._options['300'])
-        screen.addstr(ys[2] + 7, xs[0] - 6, '301: ' + self._options['301'])
+        screen.addstr(ys[2] + 7, xs[0] - 6, 'Result: ' + self._internal_buffer)
+        screen.addstr(ys[2] + 8, xs[0] - 6, '300: ' + self._options['300'])
+        screen.addstr(ys[2] + 9, xs[0] - 6, '301: ' + self._options['301'])
+        screen.addstr(ys[2] + 10, xs[0] - 6, '302: ' + self._options['302'])
+        screen.addstr(ys[2] + 11, xs[0] - 6, '310: ' + self._options['310'])
 
     def _display_group(self, screen, pos, key, group):
         (y, x) = pos
@@ -101,4 +110,33 @@ class KeypadWidget(GeneratorWidget):
         screen.addstr(y, x0, '-' * (x1 - x0))
 
     def handle_input(self, u_in):
-        GeneratorStateMaster().reset_state()
+        self.current_option_code += u_in
+
+        if len(self.current_option_code) > 3:
+            raise GeneratorError('Not supported operation in KeypadWidget.')
+        elif len(self.current_option_code) == 3:
+            self._handle_submission_code(self.current_option_code)
+
+    def _handle_submission_code(self, u_in):
+        if u_in == '300':
+            self._execution_observer.notify(self._internal_buffer)
+        elif u_in == '301':
+            self._internal_buffer = self._internal_buffer[:-1]
+        elif u_in == '302':
+            self._internal_buffer = ''
+        elif u_in == '310':
+            GeneratorStateMaster().pop_state()
+        else:
+            self._add_to_internal_buffer(u_in)
+
+        self.current_option_code = ''
+
+    def _add_to_internal_buffer(self, option_code):
+        try:
+            option_key = option_code[0:2]
+            letter_key = option_code[-1:]
+            option_letter = self._options[option_key][letter_key]
+
+            self._internal_buffer += option_letter
+        except KeyError:
+            raise GeneratorError('Not supported operation in KeypadWidget.')
