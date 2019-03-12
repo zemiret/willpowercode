@@ -3,6 +3,7 @@ from generator.base import make_generator_entry
 from generator.execution_observers.execution_observer import ExecutionObserver
 from generator.execution_observers.observers_factory import ObserversFactory
 from generator.widgets.common_gen import CommonWidget
+from generator.widgets.keypad import KeypadWidget
 from generator.widgets.navigation import NavigationWidget
 from generator.widgets.refactor import RefactorWidget
 from generator.widgets.write import WriteWidget
@@ -22,7 +23,8 @@ class TopLevelWidget(GeneratorWidget):
             '0': make_generator_entry(WriteWidget.caption, WidgetsFactory.make_write()),
             '1': make_generator_entry(NavigationWidget.caption, WidgetsFactory.make_navigation()),
             '2': make_generator_entry(RefactorWidget.caption, WidgetsFactory.make_refactor()),
-            '3': make_generator_entry(CommonWidget.caption, WidgetsFactory.make_common())
+            # '3': make_generator_entry(CommonWidget.caption, WidgetsFactory.make_common()),
+            '3': make_generator_entry(KeypadWidget.caption, WidgetsFactory.make_keypad()),
         }
 
     def display(self, screen, *args, **kwargs):

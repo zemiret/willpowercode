@@ -3,6 +3,7 @@ import unittest
 from generator.widgets import WidgetsFactory
 from generator.widgets.common_gen import CommonWidget
 from generator.widgets.function import FunctionWidget
+from generator.widgets.keypad import KeypadWidget
 from generator.widgets.navigation import NavigationWidget
 from generator.widgets.numeric_keypad import NumericKeypadWidget
 from generator.widgets.refactor import RefactorWidget
@@ -20,6 +21,7 @@ class TestWidgetsFactory(TestCase):
         self.assertIsInstance(WidgetsFactory.make_function(), FunctionWidget)
         self.assertIsInstance(WidgetsFactory.make_refactor(), RefactorWidget)
         self.assertIsInstance(WidgetsFactory.make_common(), CommonWidget)
+        self.assertIsInstance(WidgetsFactory.make_keypad(), KeypadWidget)
 
 
 if __name__ == '__main__':

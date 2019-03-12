@@ -48,3 +48,8 @@ class WidgetsFactory(object):
     def make_common(observer=ObserversFactory.make_stub()) -> GeneratorWidget:
         from generator.widgets.common_gen import CommonWidget
         return CommonWidget(observer)
+
+    @staticmethod
+    def make_keypad(observer=ObserversFactory.make_keypad()) -> GeneratorWidget:
+        from generator.widgets.keypad import KeypadWidget
+        return KeypadWidget(observer)
