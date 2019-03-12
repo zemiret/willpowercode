@@ -51,27 +51,29 @@ class KeypadWidget(GeneratorWidget):
                 '2': 'y',
                 '3': 'z',
             },
+            '300': 'Accept',
+            '301': 'Delete last',
         }
 
     def display(self, screen, *args, **kwargs):
         screen.addstr(0, 0, KeypadWidget.caption)
 
         ys = [4, 12, 20]
-        # hrs = [7, 13]
-        xs = [8, 23, 42]
+        xs = [8, 26, 44]
 
         self._display_group(screen, (ys[0], xs[0]), '00', self._options['00'])
         self._display_group(screen, (ys[0], xs[2]), '01', self._options['01'])
-        # self._display_hr(screen, hrs[0], xs[0], xs[2])
 
         self._display_group(screen, (ys[1], xs[0]), '10', self._options['10'])
         self._display_group(screen, (ys[1], xs[1]), '11', self._options['11'])
         self._display_group(screen, (ys[1], xs[2]), '12', self._options['12'])
-        # self._display_hr(screen, hrs[1], xs[0], xs[2])
 
         self._display_group(screen, (ys[2], xs[0]), '20', self._options['20'])
         self._display_group(screen, (ys[2], xs[1]), '21', self._options['21'])
         self._display_group(screen, (ys[2], xs[2]), '22', self._options['22'])
+
+        screen.addstr(ys[2] + 6, xs[0] - 6, '300: ' + self._options['300'])
+        screen.addstr(ys[2] + 7, xs[0] - 6, '301: ' + self._options['301'])
 
     def _display_group(self, screen, pos, key, group):
         (y, x) = pos
