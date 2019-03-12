@@ -1,7 +1,9 @@
 from generator import Commander, GeneratorStateMaster
+from generator.buffers import GeneratorBuffers
 from generator.exceptions import GeneratorError
 from generator.execution_observers import ExecutionObserver
 from utils.common import abs_path
+from generator.scripts import create_script
 
 
 class FunctionExecutionObserver(ExecutionObserver):
@@ -9,12 +11,20 @@ class FunctionExecutionObserver(ExecutionObserver):
         super().__init__()
 
         def _decorator_action():
-            Commander().append_command(abs_path(__file__, '..', 'scripts', 'function', 'decorator'))
+            command = _create_command(abs_path(__file__, '..', 'scripts', 'function', 'decorator'))
+
+            Commander().append_command(command)
             Commander().execute()
 
         def _definition_action():
-            Commander().append_command(abs_path(__file__, '..', 'scripts', 'function', 'definition'))
+            command = _create_command(abs_path(__file__, '..', 'scripts', 'function', 'definition'))
+
+            Commander().append_command(command)
             Commander().execute()
+
+        def _create_command(script_path):
+            decorator_name = GeneratorBuffers().input.peek()
+            return create_script(script_path, decorator_name)
 
         self._options = {
             '0': _decorator_action,

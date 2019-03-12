@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from utils.common import abs_path
+from utils.common import abs_path, tmp_file_path
 
 
 class Commander(object):
@@ -11,8 +11,7 @@ class Commander(object):
             self._output_file = ''
             self._save_and_quit_command = abs_path(__file__, 'scripts', 'common', 'save_and_quit')
 
-            # TODO: Think of a better way to create temporary files (however the standard python temp cannot be used)
-            self._commands_filepath = os.path.realpath(os.path.join(os.environ['HOME'], 'tmp', 'commands'))
+            self._commands_filepath = tmp_file_path()
 
         def append_command(self, command_path):
             self._command_chain.append(command_path)

@@ -1,1 +1,1 @@
-:execute "normal! i@willpower_decorator\n\<esc>"
+:execute "normal! i@{}\n\<esc>"
