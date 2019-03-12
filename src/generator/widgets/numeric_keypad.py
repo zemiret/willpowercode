@@ -52,11 +52,9 @@ class NumericKeypadWidget(GeneratorWidget):
             self._display_options(screen, self.caption, self._options)
 
     def _display_options(self, screen, caption: str, options):
-        screen.clear()
         screen.addstr(0, 0, caption)
         for i, (key, val) in enumerate(options.items()):
             self._display_row(screen, i + 1, key, val)
-        screen.refresh()
 
     def _display_row(self, screen, index, key, value):
         screen.addstr(index, 0, key + ': ' + (value if type(value) is str else value['caption']))

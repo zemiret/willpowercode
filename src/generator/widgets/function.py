@@ -15,10 +15,8 @@ class FunctionWidget(GeneratorWidget):
         }
 
     def display(self, screen, *args, **kwargs):
-        print("Displaying function generator")
         super().display(screen)
         screen.addstr(0, 0, FunctionWidget.caption)
-        screen.refresh()
 
     def handle_input(self, u_in):
         self._execution_observer.notify(u_in)

@@ -23,7 +23,6 @@ class WriteWidget(GeneratorWidget):
     def display(self, screen, *args, **kwargs):
         super().display(screen)
         screen.addstr(0, 0, WriteWidget.caption)
-        screen.refresh()
 
     def handle_input(self, u_in):
         try:

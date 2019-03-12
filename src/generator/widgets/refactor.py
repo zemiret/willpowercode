@@ -6,9 +6,7 @@ class RefactorWidget(GeneratorWidget):
     caption = 'Refactor'
 
     def display(self, screen, *args, **kwargs):
-        screen.clear()
-        screen.addstr("You're in refactor generator")
-        screen.refresh()
+        screen.addstr(0, 0, "You're in refactor generator")
 
     def handle_input(self, u_in):
         GeneratorStateMaster().reset_state()

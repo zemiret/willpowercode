@@ -26,10 +26,8 @@ class TopLevelWidget(GeneratorWidget):
         }
 
     def display(self, screen, *args, **kwargs):
-        screen.clear()
         for i, (key, val) in enumerate(self._options.items()):
             screen.addstr(i, 0, key + ': ' + self._options[key]['caption'])
-        screen.refresh()
 
     def handle_input(self, u_in):
         int_in = int(u_in)

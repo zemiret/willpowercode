@@ -9,4 +9,12 @@ class GeneratorBuffers(Widget):
         self._input_buffer_widget = InputBufferWidget(InputBuffer())
 
     def display(self, screen, *args, **kwargs):
-        pass
+        self._input_buffer_widget.display(
+            screen,
+            (self.rows(screen) - 1, 0),
+            *args, **kwargs)
+        self._nav_buffer_widget.display(
+            screen,
+            (self.rows(screen) - 1, self.cols(screen) - 1),
+            reverse=True,
+            *args, **kwargs)

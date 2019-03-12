@@ -30,12 +30,19 @@ class NavigationBuffer(Buffer):
 
 
 class NavigationBufferWidget(Widget):
-    def __init__(self, nav_buffer):
+    def __init__(self, nav_buffer: Buffer):
         self._buffer = nav_buffer
 
     def display(self, screen, *args, **kwargs):
         """
-        :param args: should be a tuple with (y, x) position on the screen
-        :return: None
+        :param args: should be (y, x) with position to display on the screen
+        :param kwargs: optional reverse argument. If set, the x position is assumed to be the end position
+        :return None
         """
-        pass
+        text = "{}L:{}c".format(self._buffer.peek()[0], self._buffer.peek()[1])
+        y, x = args[0]
+
+        if 'reverse' in kwargs and kwargs['reverse'] is True:
+            x = self.cols(screen) - len(text) - 1
+
+        screen.addstr(y, x, text)

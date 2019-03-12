@@ -6,9 +6,7 @@ class NavigationWidget(GeneratorWidget):
     caption = 'Navigation'
 
     def display(self, screen, *args, **kwargs):
-        screen.clear()
-        screen.addstr("You're in navigation generator")
-        screen.refresh()
+        screen.addstr(0, 0, "You're in navigation generator")
 
     def handle_input(self, u_in):
         GeneratorStateMaster().reset_state()

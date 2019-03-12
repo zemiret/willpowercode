@@ -21,8 +21,18 @@ class InputBuffer(Buffer):
 
 
 class InputBufferWidget(Widget):
-    def __init__(self, input_buffer):
+    def __init__(self, input_buffer: Buffer):
         self._buffer = input_buffer
 
     def display(self, screen, *args, **kwargs):
-        pass
+        """
+        :param args: should be (y, x) with position to display on the screen
+        :param kwargs: optional reverse argument. If set, the x position is assumed to be the end position
+        :return None
+        """
+        text = 'Text buffer: {}'.format(self._buffer.peek())
+        y, x = args[0]
+        if 'reverse' in kwargs and kwargs['reverse'] is True:
+            x = self.cols(screen) - len(text) - 1
+
+        screen.addstr(y, x, text)

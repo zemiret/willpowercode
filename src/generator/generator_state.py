@@ -20,8 +20,10 @@ class GeneratorStateMaster(object):
             self.append_state(self._start_state)
 
         def display(self):
+            self._screen.clear()
             self._buffers.display(self._screen)
             self._current_state.display(self._screen)
+            self._screen.refresh()
 
         def handle_input(self, u_in):
             self._current_state.handle_input(u_in)

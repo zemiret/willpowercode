@@ -16,7 +16,6 @@ class GeneratorWidget(Widget):
         Displays without caption (listing options from 1st line).
         To display caption call super from base class and then display caption.
         """
-        screen.clear()
         for i, (key, val) in enumerate(self._options.items()):
             screen.addstr(i + 1, 0, key + ': ' + (val if type(val) is str else val['caption']))
 
