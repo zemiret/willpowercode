@@ -87,6 +87,7 @@ def display_results(res):
     cv.imshow('output', res[0])
     cv.imshow('frame', res[1])
     cv.imshow('threshed', res[2])
+    cv.imshow('roi', res[3])
 
 
 def read_frame(cap, d_ui_in, d_ui_out):
@@ -143,7 +144,35 @@ def keyboard_main(stdscr):
             gen.handle_input(keymap[str(ch)])
 
 
+def detector_main():
+    cap = cv.VideoCapture(0)
+
+    detector, d_ui_in, d_ui_out, d_input_in, d_input_out = setup_detector(cap)
+    detector.start()
+
+    while True:
+        res = read_frame(cap, d_ui_in, d_ui_out)
+
+        try:
+            res_out = get_detector_output(d_input_out)
+            print(res_out)
+        except (Empty, ValueError):
+            pass
+
+        display_results(res)
+
+        key = cv.waitKey(5) & 0xff
+        if key == ord('q'):
+            detector.stop()
+            detector.join()
+            cap.release()
+            cv.destroyAllWindows()
+            break
+        else:
+            d_input_in.put(key)
+
+
 if __name__ == "__main__":
-    # TODO: Test with real detector
     # wrapper(main)
-    wrapper(keyboard_main)
+    # wrapper(keyboard_main)
+    detector_main()

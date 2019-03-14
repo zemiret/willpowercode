@@ -33,7 +33,7 @@ class Detector(Thread):
         self._q_input_out = q_input_out
 
         self._bg_subtractor_learning_rate = 0
-        self._subtractor = cv.createBackgroundSubtractorMOG2()
+        self._subtractor = cv.createBackgroundSubtractorMOG2(detectShadows=False, varThreshold=0)
         self._roi_points = roi
 
         self._capture_counter = Counter()
@@ -64,7 +64,7 @@ class Detector(Thread):
                 fingers_count = self._detect_fingers_count(contours, canvas)
 
             self._update_fingers_counter(fingers_count)
-            self._push_frames(canvas, frame, threshed)
+            self._push_frames(canvas, frame, threshed, roi)
 
     def _reset_subtractor(self):
         self._subtractor = cv.createBackgroundSubtractorMOG2(varThreshold=0)
@@ -181,9 +181,9 @@ class Detector(Thread):
         else:
             self._capture_counter[fingers_count] += 1
 
-    def _push_frames(self, canvas, frame, threshed):
+    def _push_frames(self, canvas, frame, threshed, roi):
         try:
-            self._q_ui_out.put_nowait((canvas, frame, threshed))
+            self._q_ui_out.put_nowait((canvas, frame, threshed, roi))
         except Full:
             pass
 
