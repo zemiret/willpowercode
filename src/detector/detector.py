@@ -33,15 +33,12 @@ class Detector(Thread):
         self._q_input_out = q_input_out
 
         self._bg_subtractor_learning_rate = 0
-        # self._subtractor = cv.createBackgroundSubtractorMOG2(detectShadows=False, varThreshold=0)
         self._subtractor = cv.bgsegm.createBackgroundSubtractorGSOC(
             mc=cv.bgsegm.LSBP_CAMERA_MOTION_COMPENSATION_LK,
             nSamples=30,
             hitsThreshold=60,
             noiseRemovalThresholdFacBG=0.008,
             noiseRemovalThresholdFacFG=0.016
-            # noiseRemovalThresholdFacBG=0.01,
-            # noiseRemovalThresholdFacFG=0.01
         )
         self._roi_points = roi
 
@@ -50,9 +47,6 @@ class Detector(Thread):
         self._stop_evt = Event()
         self._erode_iterations = 1
         self._erode_kernel_size = (3, 3)
-
-        # self._save_next_frame = True
-        # self._saved_bg_frame = None
 
     def run(self):
         while True:
@@ -69,10 +63,6 @@ class Detector(Thread):
 
             self._draw_roi(frame)
             roi = self._get_roi(frame)
-
-            # if self._save_next_frame:
-            #     self._saved_bg_frame = cv.blur(roi, (15, 15))
-            #     self._save_next_frame = False
 
             roi = self._prepare_for_extraction(roi)
             contours, threshed = self._get_contours(roi)
@@ -117,8 +107,6 @@ class Detector(Thread):
         return roi
 
     def _prepare_for_extraction(self, frame):
-        # frame = cv.resize(frame, )
-
         hsv_img = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
         # multiple by a factor to change the saturation
@@ -136,68 +124,7 @@ class Detector(Thread):
 
         frame = cv.blur(frame, (5, 5))
 
-        # TOOOOOO SLOW
-        # frame = cv.fastNlMeansDenoisingColored(frame, None, 10, 10, 7, 21)
-        # segments = cv.ximgproc.createSuperpixelSLIC(frame, algorithm=cv.ximgproc.MSLIC, region_size=31)
-        # print(segments)
-
-        # vis = np.zeros(frame.shape[:2], dtype="float")
-
-        # loop over each of the unique superpixels
-        # for v in np.unique(segments):
-            # construct a mask for the segment so we can compute image
-            # statistics for *only* the masked region
-            # mask = np.ones(frame.shape[:2])
-            # mask[segments == v] = 0
-
-            # compute the superpixel colorfulness, then update the
-            # visualization array
-            # seg_color = self.segment_colorfulness(frame, mask)
-            # vis[segments == v] = seg_color
-
-        # frame = vis
-
-        # alpha = 0.2
-        # overlay = np.dstack([vis] * 3)
-        # output = frame.copy()
-        # cv.addWeighted(overlay, alpha, frame, 1 - alpha, 0, frame, 8)
-
-        # if self._saved_bg_frame is not None:
-        #     frame = frame - self._saved_bg_frame
-        # diff = cv.absdiff(frame, self._saved_bg_frame)
-        # mask = cv.cvtColor(diff, cv.COLOR_BGR2GRAY)
-
-        # th = 1
-        # imask = mask > th
-        # canvas = np.zeros_like(self._saved_bg_frame, np.uint8)
-        # canvas[imask] = frame[imask]
-        #
-        # frame = canvas
-
         return frame
-
-    # def segment_colorfulness(self, image, mask):
-    #     # split the image into its respective RGB components, then mask
-    #     # each of the individual RGB channels so we can compute
-    #     # statistics only for the masked region
-    #     (B, G, R) = cv.split(image.astype("float"))
-    #     R = np.ma.masked_array(R, mask=mask)
-    #     G = np.ma.masked_array(B, mask=mask)
-    #     B = np.ma.masked_array(B, mask=mask)
-    #
-    #     # compute rg = R - G
-    #     rg = np.absolute(R - G)
-    #
-    #     # compute yb = 0.5 * (R + G) - B
-    #     yb = np.absolute(0.5 * (R + G) - B)
-    #
-    #     # compute the mean and standard deviation of both `rg` and `yb`,
-    #     # then combine them
-    #     stdRoot = np.sqrt((rg.std() ** 2) + (yb.std() ** 2))
-    #     meanRoot = np.sqrt((rg.mean() ** 2) + (yb.mean() ** 2))
-    #
-    #     # derive the "colorfulness" metric and return it
-    #     return stdRoot + (0.3 * meanRoot)
 
     def _get_contours(self, roi):
         fgmask = self._get_fgmask(roi)
@@ -224,9 +151,7 @@ class Detector(Thread):
 
     def _apply_filters(self, extracted):
         # blurred = cv.blur(extracted, (3, 3))
-        # _, thresh = cv.threshold(blurred, 20, 255, cv.THRESH_BINARY)
         _, thresh = cv.threshold(extracted, 30, 255, cv.THRESH_BINARY)
-        # thresh = cv.adaptiveThreshold(extracted, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY, 21, 2)
 
         thresh = cv.morphologyEx(thresh, cv.MORPH_OPEN, (3, 3), iterations=5)
 
