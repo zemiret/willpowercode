@@ -85,7 +85,7 @@ def setup_generator(screen):
 
 def display_results(res):
     cv.imshow('output', res[0])
-    cv.imshow('frame', res[1])
+    # cv.imshow('frame', res[1])
     cv.imshow('threshed', res[2])
     cv.imshow('roi', res[3])
 
