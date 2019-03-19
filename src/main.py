@@ -202,7 +202,7 @@ def setup_test_detector(cap, subtractor):
 
 
 def test_main():
-    cap = cv.VideoCapture('/Users/antoni.mleczko/dev/willpowercode/resources/testMovie.mov')
+    cap = cv.VideoCapture('/Users/antoni.mleczko/dev/willpowercode/resources/testMovieShort.mov')
 
     detectors = {
         'KNN': cv.createBackgroundSubtractorKNN(detectShadows=False),
@@ -220,8 +220,8 @@ def test_main():
         det_setups.append((name, setup_test_detector(cap, detector)))
 
     # skip 130 frames:
-    for i in range(130):
-        cap.read()
+    # for i in range(130):
+    #     cap.read()
 
     # send reset to all detectors:
     for dset in det_setups:
@@ -230,18 +230,31 @@ def test_main():
     results = []
 
     while cap.isOpened():
-        print('Ya in loop?')
+        # print('Ya in loop?')
 
         ret, frame = cap.read()
         step_res = []
 
         if ret is True:
-            for dset in det_setups:
-                dset[1][1].put(frame)
-                step_res.append((dset[0], dset[1][2].get(block=True)))
-            step_res.append(("original", frame))
+            cv.imshow("or", frame)
+            # for dset in det_setups:
+            #     dset[1][1].put(frame)
+            #     step_res.append((dset[0], dset[1][2].get(block=True)))
 
+            step_res.append(("original", frame))
             results.append(step_res)
+        else:
+            break
+
+        key = cv.waitKey(5) & 0xff
+        if key == ord('q'):
+            # generate_video(results)
+            for dset in det_setups:
+                dset[1][0].stop()
+                dset[1][0].join()
+                cap.release()
+                cv.destroyAllWindows()
+            break
 
     generate_video(results)
 
@@ -255,17 +268,23 @@ def test_main():
 def generate_video(img):
     folder = '/Users/antoni.mleczko/dev/willpowercode/resources'
 
-    for i in range(len(img)):
-        plot_subplots(img[i])
-        plt.savefig(folder + "/file%02d.png" % i)
+    # for i in range(len(img)):
+    print(img[1][0])
+    cv.imshow('whatever', img[1][0][1])
+    cv.waitKey(0)
+    plt.show()
+    # plot_subplots(img[1])
+    # plt.show()
+        # plt.savefig(folder + "/file%02d.png" % i)
 
-    os.chdir(folder)
-    os.subprocess.call([
-        'ffmpeg', '-framerate', '8', '-i', 'file%02d.png', '-r', '30', '-pix_fmt', 'yuv420p',
-        'video_name.mp4'
-    ])
-    for file_name in glob.glob("*.png"):
-        os.remove(file_name)
+    # os.chdir(folder)
+    # os.subprocess.call([
+    #     'ffmpeg', '-framerate', '8', '-i', 'file%02d.png', '-r', '30', '-pix_fmt', 'yuv420p',
+    #     'video_name.mp4'
+    # ])
+    # for file_name in glob.glob("*.png"):
+        # os.remove(file_name)
+        # print(file_name)
 
 
 def plot_subplots(results):
