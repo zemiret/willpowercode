@@ -110,15 +110,15 @@ class Detector(Thread):
         hsv_img = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
         # multiple by a factor to change the saturation
-        hsv_img[..., 1] = hsv_img[..., 1] * 1.4
+        hsv_img[..., 1] = hsv_img[..., 1] * 1.2
 
         # multiple by a factor of less than 1 to reduce the brightness
         hsv_img[..., 2] = hsv_img[..., 2] * 1
 
-        frame = cv.cvtColor(hsv_img, cv.COLOR_HSV2BGR)
-        frame = cv.bitwise_not(frame)
+        # frame = cv.cvtColor(hsv_img, cv.COLOR_HSV2BGR)
+        # frame = cv.bitwise_not(frame)
 
-        factor = 5
+        factor = 3
         frame = cv.resize(frame, (frame.shape[1] // factor, frame.shape[0] // factor))
         frame = cv.resize(frame, (frame.shape[1] * factor, frame.shape[0] * factor))
 
@@ -136,9 +136,7 @@ class Detector(Thread):
         return contours, filtered
 
     def _get_fgmask(self, roi):
-        # fgmask = self._subtractor.apply(roi, learningRate=self._bg_subtractor_learning_rate)
         fgmask = self._subtractor.apply(roi, learningRate=0)
-        # kernel = np.ones((3, 3), np.uint8)
         fgmask = cv.erode(fgmask, self._erode_kernel_size, iterations=self._erode_iterations)
 
         return fgmask
