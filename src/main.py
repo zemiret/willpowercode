@@ -6,10 +6,6 @@ from curses import wrapper
 from queue import Queue, Empty
 
 import cv2 as cv
-import matplotlib as mlp
-mlp.use('TkAgg')
-
-import matplotlib.pyplot as plt
 
 from detector import Detector
 from generator import GeneratorStateMaster, Commander
@@ -202,7 +198,7 @@ def setup_test_detector(cap, subtractor):
 
 
 def test_main():
-    cap = cv.VideoCapture('/Users/antoni.mleczko/dev/willpowercode/resources/testMovieShort.mov')
+    cap = cv.VideoCapture('/Users/antoni.mleczko/dev/willpowercode/resources/testMovie.mov')
 
     detectors = {
         'KNN': cv.createBackgroundSubtractorKNN(detectShadows=False),
@@ -217,36 +213,41 @@ def test_main():
     det_setups = []
 
     for name, detector in detectors.items():
-        det_setups.append((name, setup_test_detector(cap, detector)))
+        detector_with_name = (name, setup_test_detector(cap, detector))
+        det_setups.append(detector_with_name)
+        detector_with_name[1][0].start()
 
     # skip 130 frames:
-    # for i in range(130):
-    #     cap.read()
+    for i in range(130):
+        cap.read()
 
     # send reset to all detectors:
     for dset in det_setups:
         dset[1][3].put('c')
 
-    results = []
-
     while cap.isOpened():
-        # print('Ya in loop?')
+        print('Ya in loop?')
 
         ret, frame = cap.read()
         step_res = []
 
         if ret is True:
-            cv.imshow("or", frame)
-            # for dset in det_setups:
-            #     dset[1][1].put(frame)
-            #     step_res.append((dset[0], dset[1][2].get(block=True)))
+            for dset in det_setups:
+                dset[1][1].put(frame)
+                res = dset[1][2].get(block=True)
+                cv.putText(res[0], dset[0], (20, 20), cv.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 2, cv.LINE_AA)
+                step_res.append(res)
 
-            step_res.append(("original", frame))
-            results.append(step_res)
+            horizontal1 = np.hstack([step_res[i][0] for i in range(4)])
+            horizontal2 = np.hstack([step_res[i][0] for i in range(4, 7)] + [step_res[0][0]])
+
+            stack = np.vstack([horizontal1, horizontal2])
+
+            cv.imshow('res', stack)
         else:
             break
 
-        key = cv.waitKey(5) & 0xff
+        key = cv.waitKey(1) & 0xff
         if key == ord('q'):
             # generate_video(results)
             for dset in det_setups:
@@ -256,7 +257,7 @@ def test_main():
                 cv.destroyAllWindows()
             break
 
-    generate_video(results)
+    # generate_video(results)
 
     for dset in det_setups:
         dset[1][0].stop()
@@ -265,26 +266,29 @@ def test_main():
         cv.destroyAllWindows()
 
 
-def generate_video(img):
-    folder = '/Users/antoni.mleczko/dev/willpowercode/resources'
-
-    # for i in range(len(img)):
-    print(img[1][0])
-    cv.imshow('whatever', img[1][0][1])
-    cv.waitKey(0)
-    plt.show()
-    # plot_subplots(img[1])
-    # plt.show()
-        # plt.savefig(folder + "/file%02d.png" % i)
-
-    # os.chdir(folder)
-    # os.subprocess.call([
-    #     'ffmpeg', '-framerate', '8', '-i', 'file%02d.png', '-r', '30', '-pix_fmt', 'yuv420p',
-    #     'video_name.mp4'
-    # ])
-    # for file_name in glob.glob("*.png"):
-        # os.remove(file_name)
-        # print(file_name)
+# def generate_video(img):
+#     folder = '/Users/antoni.mleczko/dev/willpowercode/resources'
+#
+#     # for i in range(len(img)):
+#     print(img[1][0])
+#     # cv.imshow('whatever', img[1][0][1])
+#     plt.imshow(img[1][0][1])
+#     plt.yticks([])
+#     plt.xticks([])
+#     cv.waitKey(0)
+#     plt.show()
+#     # plot_subplots(img[1])
+#     # plt.show()
+#         # plt.savefig(folder + "/file%02d.png" % i)
+#
+#     # os.chdir(folder)
+#     # os.subprocess.call([
+#     #     'ffmpeg', '-framerate', '8', '-i', 'file%02d.png', '-r', '30', '-pix_fmt', 'yuv420p',
+#     #     'video_name.mp4'
+#     # ])
+#     # for file_name in glob.glob("*.png"):
+#         # os.remove(file_name)
+#         # print(file_name)
 
 
 def plot_subplots(results):
