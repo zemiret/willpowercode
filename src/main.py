@@ -1,8 +1,15 @@
+import glob
+
+import numpy as np
 import os
 from curses import wrapper
 from queue import Queue, Empty
 
 import cv2 as cv
+import matplotlib as mlp
+mlp.use('TkAgg')
+
+import matplotlib.pyplot as plt
 
 from detector import Detector
 from generator import GeneratorStateMaster, Commander
@@ -172,7 +179,110 @@ def detector_main():
             d_input_in.put(key)
 
 
+def setup_test_detector(cap, subtractor):
+    detector_q_ui_in = Queue()
+    detector_q_ui_out = Queue()
+    detector_q_input_in = Queue()
+    detector_q_input_out = Queue()
+
+    frame_width = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+
+    roi = ((frame_width // 2, 0), (frame_width - 1, frame_height - 1))
+    # roi = ((0, 0), (frame_width // 2, frame_height - 1))
+
+    detector = Detector(detector_q_ui_in,
+                        detector_q_ui_out,
+                        detector_q_input_in,
+                        detector_q_input_out,
+                        roi,
+                        subtractor)
+
+    return detector, detector_q_ui_in, detector_q_ui_out, detector_q_input_in, detector_q_input_out
+
+
+def test_main():
+    cap = cv.VideoCapture('/Users/antoni.mleczko/dev/willpowercode/resources/testMovie.mov')
+
+    detectors = {
+        'KNN': cv.createBackgroundSubtractorKNN(detectShadows=False),
+        'MOG': cv.bgsegm.createBackgroundSubtractorMOG(),
+        'MOG2': cv.createBackgroundSubtractorMOG2(detectShadows=False),
+        'GMG': cv.bgsegm.createBackgroundSubtractorGMG(),
+        'CNT': cv.bgsegm.createBackgroundSubtractorCNT(),
+        'GSOC': cv.bgsegm.createBackgroundSubtractorGSOC(),
+        'LSBP': cv.bgsegm.createBackgroundSubtractorLSBP(),
+    }
+
+    det_setups = []
+
+    for name, detector in detectors.items():
+        det_setups.append((name, setup_test_detector(cap, detector)))
+
+    # skip 130 frames:
+    for i in range(130):
+        cap.read()
+
+    # send reset to all detectors:
+    for dset in det_setups:
+        dset[1][3].put('c')
+
+    results = []
+
+    while cap.isOpened():
+        print('Ya in loop?')
+
+        ret, frame = cap.read()
+        step_res = []
+
+        if ret is True:
+            for dset in det_setups:
+                dset[1][1].put(frame)
+                step_res.append((dset[0], dset[1][2].get(block=True)))
+            step_res.append(("original", frame))
+
+            results.append(step_res)
+
+    generate_video(results)
+
+    for dset in det_setups:
+        dset[1][0].stop()
+        dset[1][0].join()
+        cap.release()
+        cv.destroyAllWindows()
+
+
+def generate_video(img):
+    folder = '/Users/antoni.mleczko/dev/willpowercode/resources'
+
+    for i in range(len(img)):
+        plot_subplots(img[i])
+        plt.savefig(folder + "/file%02d.png" % i)
+
+    os.chdir(folder)
+    os.subprocess.call([
+        'ffmpeg', '-framerate', '8', '-i', 'file%02d.png', '-r', '30', '-pix_fmt', 'yuv420p',
+        'video_name.mp4'
+    ])
+    for file_name in glob.glob("*.png"):
+        os.remove(file_name)
+
+
+def plot_subplots(results):
+    for index, (name, frame) in enumerate(results):
+        plot_img(index, name, frame)
+
+
+def plot_img(index, title, img):
+    plt.subplot(2, 4, index)
+    plt.imshow(img)
+    plt.title(title)
+    plt.xticks([])
+    plt.yticks([])
+
+
 if __name__ == "__main__":
     # wrapper(main)
     # wrapper(keyboard_main)
-    detector_main()
+    # detector_main()
+    test_main()

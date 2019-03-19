@@ -16,7 +16,7 @@ class Detector(Thread):
         The detector works for counting fingers, there is one quirk though - it does not detect the empty hand and treats
         it as one.
     """
-    def __init__(self, q_ui_in, q_ui_out, q_input_in, q_input_out, roi, **kwargs):
+    def __init__(self, q_ui_in, q_ui_out, q_input_in, q_input_out, roi, subtractor, **kwargs):
         """
         Args:
             q_ui_in (Queue): Queue for pushing registered frame
@@ -33,13 +33,18 @@ class Detector(Thread):
         self._q_input_out = q_input_out
 
         self._bg_subtractor_learning_rate = 0
-        self._subtractor = cv.bgsegm.createBackgroundSubtractorGSOC(
-            mc=cv.bgsegm.LSBP_CAMERA_MOTION_COMPENSATION_LK,
-            nSamples=30,
-            hitsThreshold=60,
-            noiseRemovalThresholdFacBG=0.008,
-            noiseRemovalThresholdFacFG=0.016
-        )
+        # self._subtractor = cv.bgsegm.createBackgroundSubtractorLSBP(
+        #         mc=cv.bgsegm.LSBP_CAMERA_MOTION_COMPENSATION_LK,
+        # )
+        # self._subtractor = cv.bgsegm.createBackgroundSubtractorGSOC(
+        #     mc=cv.bgsegm.LSBP_CAMERA_MOTION_COMPENSATION_LK,
+        #     nSamples=30,
+        #     hitsThreshold=60,
+        #     noiseRemovalThresholdFacBG=0.008,
+        #     noiseRemovalThresholdFacFG=0.016
+        # )
+        self._subtractor = subtractor
+
         self._roi_points = roi
 
         self._capture_counter = Counter()
